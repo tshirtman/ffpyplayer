@@ -63,6 +63,7 @@
 <li><a class="reference internal" href="#">Examples</a><ul>
 <li><a class="reference internal" href="#simple-transcoding-example">Simple transcoding example</a></li>
 <li><a class="reference internal" href="#more-complex-transcoding-example">More complex transcoding example</a></li>
+<li><a class="reference internal" href="#compressing-video-to-h264">Compressing video to h264</a></li>
 </ul>
 </li>
 </ul>
@@ -113,7 +114,7 @@
 
 <span class="c"># only video</span>
 <span class="n">ff_opts</span><span class="o">=</span><span class="p">{</span><span class="s">&#39;an&#39;</span><span class="p">:</span><span class="bp">True</span><span class="p">,</span> <span class="s">&#39;sync&#39;</span><span class="p">:</span><span class="s">&#39;video&#39;</span><span class="p">}</span>
-<span class="n">player</span> <span class="o">=</span> <span class="n">MediaPlayer</span><span class="p">(</span><span class="s">r&#39;C:\FFmpeg\suz.mkv&#39;</span><span class="p">,</span> <span class="n">vid_sink</span><span class="o">=</span><span class="n">weakref</span><span class="o">.</span><span class="n">ref</span><span class="p">(</span><span class="n">callback</span><span class="p">),</span>
+<span class="n">player</span> <span class="o">=</span> <span class="n">MediaPlayer</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="n">callback</span><span class="o">=</span><span class="n">weakref</span><span class="o">.</span><span class="n">ref</span><span class="p">(</span><span class="n">callback</span><span class="p">),</span>
                      <span class="n">ff_opts</span><span class="o">=</span><span class="n">ff_opts</span><span class="p">)</span>
 <span class="c"># wait for size to be initialized</span>
 <span class="k">while</span> <span class="n">player</span><span class="o">.</span><span class="n">get_metadata</span><span class="p">()[</span><span class="s">&#39;src_vid_size&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">):</span>
@@ -125,7 +126,7 @@
             <span class="s">&#39;height_in&#39;</span><span class="p">:</span><span class="n">frame_size</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="s">&#39;codec&#39;</span><span class="p">:</span><span class="s">&#39;rawvideo&#39;</span><span class="p">,</span>
             <span class="s">&#39;frame_rate&#39;</span><span class="p">:(</span><span class="mi">30</span><span class="p">,</span> <span class="mi">1</span><span class="p">)}</span>
 
-<span class="n">writer</span> <span class="o">=</span> <span class="n">MediaWriter</span><span class="p">(</span><span class="s">r&#39;C:\FFmpeg\output.avi&#39;</span><span class="p">,</span> <span class="p">[</span><span class="n">out_opts</span><span class="p">])</span>
+<span class="n">writer</span> <span class="o">=</span> <span class="n">MediaWriter</span><span class="p">(</span><span class="n">filename_out</span><span class="p">,</span> <span class="p">[</span><span class="n">out_opts</span><span class="p">])</span>
 <span class="k">while</span> <span class="mi">1</span><span class="p">:</span>
     <span class="n">frame</span><span class="p">,</span> <span class="n">val</span> <span class="o">=</span> <span class="n">player</span><span class="o">.</span><span class="n">get_frame</span><span class="p">()</span>
     <span class="k">if</span> <span class="n">val</span> <span class="o">==</span> <span class="s">&#39;eof&#39;</span><span class="p">:</span>
@@ -151,7 +152,7 @@
 <span class="c"># only video</span>
 <span class="c"># output yuv420p frames, and don&#39;t copy</span>
 <span class="n">ff_opts</span><span class="o">=</span><span class="p">{</span><span class="s">&#39;an&#39;</span><span class="p">:</span><span class="bp">True</span><span class="p">,</span> <span class="s">&#39;sync&#39;</span><span class="p">:</span><span class="s">&#39;video&#39;</span><span class="p">,</span> <span class="s">&#39;use_ref&#39;</span><span class="p">:</span><span class="bp">True</span><span class="p">,</span> <span class="s">&#39;out_fmt&#39;</span><span class="p">:</span><span class="s">&#39;yuv420p&#39;</span><span class="p">}</span>
-<span class="n">player</span> <span class="o">=</span> <span class="n">MediaPlayer</span><span class="p">(</span><span class="s">r&#39;C:\FFmpeg\suz.mkv&#39;</span><span class="p">,</span> <span class="n">vid_sink</span><span class="o">=</span><span class="n">weakref</span><span class="o">.</span><span class="n">ref</span><span class="p">(</span><span class="n">callback</span><span class="p">),</span>
+<span class="n">player</span> <span class="o">=</span> <span class="n">MediaPlayer</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="n">callback</span><span class="o">=</span><span class="n">weakref</span><span class="o">.</span><span class="n">ref</span><span class="p">(</span><span class="n">callback</span><span class="p">),</span>
                      <span class="n">ff_opts</span><span class="o">=</span><span class="n">ff_opts</span><span class="p">)</span>
 <span class="c"># wait for size to be initialized</span>
 <span class="k">while</span> <span class="n">player</span><span class="o">.</span><span class="n">get_metadata</span><span class="p">()[</span><span class="s">&#39;src_vid_size&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">):</span>
@@ -164,7 +165,7 @@
             <span class="s">&#39;frame_rate&#39;</span><span class="p">:(</span><span class="mi">30</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span> <span class="s">&#39;width_out&#39;</span><span class="p">:</span><span class="n">frame_size</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">/</span> <span class="mi">2</span><span class="p">,</span>
             <span class="s">&#39;height_out&#39;</span><span class="p">:</span><span class="n">frame_size</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">/</span> <span class="mi">2</span><span class="p">}</span>
 
-<span class="n">writer</span> <span class="o">=</span> <span class="n">MediaWriter</span><span class="p">(</span><span class="s">r&#39;C:\FFmpeg\output.avi&#39;</span><span class="p">,</span> <span class="p">[</span><span class="n">out_opts</span><span class="p">])</span>
+<span class="n">writer</span> <span class="o">=</span> <span class="n">MediaWriter</span><span class="p">(</span><span class="n">filename_out</span><span class="p">,</span> <span class="p">[</span><span class="n">out_opts</span><span class="p">])</span>
 <span class="k">while</span> <span class="mi">1</span><span class="p">:</span>
     <span class="n">frame</span><span class="p">,</span> <span class="n">val</span> <span class="o">=</span> <span class="n">player</span><span class="o">.</span><span class="n">get_frame</span><span class="p">()</span>
     <span class="k">if</span> <span class="n">val</span> <span class="o">==</span> <span class="s">&#39;eof&#39;</span><span class="p">:</span>
@@ -179,6 +180,44 @@
 <p>Contrast the difference in time it takes the above examples to run and the resulting
 filesizes to see how much improvement occurs when data is not copied, and a yuv
 pixel format is used.</p>
+</div>
+<div class="section" id="compressing-video-to-h264">
+<h2>Compressing video to h264<a class="headerlink" href="#compressing-video-to-h264" title="Permalink to this headline">¶</a></h2>
+<div class="highlight-python"><div class="highlight"><pre><span class="kn">from</span> <span class="nn">ffpyplayer.writer</span> <span class="kn">import</span> <span class="n">MediaWriter</span>
+<span class="kn">from</span> <span class="nn">ffpyplayer.tools</span> <span class="kn">import</span> <span class="n">get_supported_pixfmts</span><span class="p">,</span> <span class="n">get_supported_framerates</span>
+
+<span class="c"># make sure the pixel format and rate are supported.</span>
+<span class="k">print</span> <span class="n">get_supported_pixfmts</span><span class="p">(</span><span class="s">&#39;libx264&#39;</span><span class="p">,</span> <span class="s">&#39;rgb24&#39;</span><span class="p">)</span>
+<span class="p">[</span><span class="s">&#39;yuv420p&#39;</span><span class="p">,</span> <span class="s">&#39;yuvj420p&#39;</span><span class="p">,</span> <span class="s">&#39;yuv422p&#39;</span><span class="p">,</span> <span class="s">&#39;yuvj422p&#39;</span><span class="p">,</span> <span class="s">&#39;yuv444p&#39;</span><span class="p">,</span> <span class="s">&#39;yuvj444p&#39;</span><span class="p">,</span> <span class="s">&#39;nv12&#39;</span><span class="p">,</span> <span class="s">&#39;nv16&#39;</span><span class="p">]</span>
+<span class="k">print</span> <span class="n">get_supported_framerates</span><span class="p">(</span><span class="s">&#39;libx264&#39;</span><span class="p">,</span> <span class="p">(</span><span class="mi">5</span><span class="p">,</span> <span class="mi">1</span><span class="p">))</span>
+<span class="p">[]</span>
+<span class="n">w</span> <span class="o">=</span> <span class="mi">640</span>
+<span class="n">h</span> <span class="o">=</span> <span class="mi">480</span>
+<span class="c"># use the half the size for the output as the input</span>
+<span class="n">out_opts</span> <span class="o">=</span> <span class="p">{</span><span class="s">&#39;pix_fmt_in&#39;</span><span class="p">:</span><span class="s">&#39;rgb24&#39;</span><span class="p">,</span> <span class="s">&#39;width_in&#39;</span><span class="p">:</span><span class="n">w</span><span class="p">,</span> <span class="s">&#39;height_in&#39;</span><span class="p">:</span><span class="n">h</span><span class="p">,</span> <span class="s">&#39;codec&#39;</span><span class="p">:</span><span class="s">&#39;libx264&#39;</span><span class="p">,</span>
+            <span class="s">&#39;frame_rate&#39;</span><span class="p">:(</span><span class="mi">5</span><span class="p">,</span> <span class="mi">1</span><span class="p">)}</span>
+<span class="c"># write using yuv420p frames into a two stream h264 codec, mp4 file where the output</span>
+<span class="c"># is half the input size for both streams.</span>
+
+<span class="c"># use the following libx264 compression options</span>
+<span class="n">lib_opts</span> <span class="o">=</span> <span class="p">{</span><span class="s">&#39;preset&#39;</span><span class="p">:</span><span class="s">&#39;slow&#39;</span><span class="p">,</span> <span class="s">&#39;crf&#39;</span><span class="p">:</span><span class="s">&#39;22&#39;</span><span class="p">}</span>
+<span class="c"># set the following metadata (ffmpeg doesn&#39;t always support writing metadata)</span>
+<span class="n">metadata</span> <span class="o">=</span> <span class="p">{</span><span class="s">&#39;title&#39;</span><span class="p">:</span><span class="s">&#39;Singing in the sun&#39;</span><span class="p">,</span> <span class="s">&#39;author&#39;</span><span class="p">:</span><span class="s">&#39;Rat&#39;</span><span class="p">,</span> <span class="s">&#39;genre&#39;</span><span class="p">:</span><span class="s">&#39;Animal sounds&#39;</span><span class="p">}</span>
+
+<span class="n">writer</span> <span class="o">=</span> <span class="n">MediaWriter</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="p">[</span><span class="n">out_opts</span><span class="p">]</span> <span class="o">*</span> <span class="mi">2</span><span class="p">,</span> <span class="n">fmt</span><span class="o">=</span><span class="s">&#39;mp4&#39;</span><span class="p">,</span>
+                     <span class="n">width_out</span><span class="o">=</span><span class="n">w</span><span class="o">/</span><span class="mi">2</span><span class="p">,</span> <span class="n">height_out</span><span class="o">=</span><span class="n">h</span><span class="o">/</span><span class="mi">2</span><span class="p">,</span> <span class="n">pix_fmt_out</span><span class="o">=</span><span class="s">&#39;yuv420p&#39;</span><span class="p">,</span>
+                     <span class="n">lib_opts</span><span class="o">=</span><span class="n">lib_opts</span><span class="p">,</span> <span class="n">metadata</span><span class="o">=</span><span class="n">metadata</span><span class="p">)</span>
+<span class="n">size</span> <span class="o">=</span> <span class="n">w</span> <span class="o">*</span> <span class="n">h</span> <span class="o">*</span> <span class="mi">3</span>
+<span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">20</span><span class="p">):</span>
+    <span class="n">buf</span> <span class="o">=</span> <span class="p">[</span><span class="nb">int</span><span class="p">(</span><span class="n">x</span> <span class="o">*</span> <span class="mi">255</span> <span class="o">/</span> <span class="n">size</span><span class="p">)</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">size</span><span class="p">)]</span>
+    <span class="n">buf</span> <span class="o">=</span> <span class="s">&#39;&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="nb">chr</span><span class="p">,</span> <span class="n">buf</span><span class="p">))</span>
+    <span class="n">writer</span><span class="o">.</span><span class="n">write_frame</span><span class="p">(</span><span class="n">pts</span><span class="o">=</span><span class="n">i</span> <span class="o">/</span> <span class="mf">5.</span><span class="p">,</span> <span class="n">stream</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="nb">buffer</span><span class="o">=</span><span class="n">buf</span><span class="p">)</span>
+
+    <span class="n">buf</span> <span class="o">=</span> <span class="p">[</span><span class="nb">int</span><span class="p">((</span><span class="n">size</span> <span class="o">-</span> <span class="n">x</span><span class="p">)</span> <span class="o">*</span> <span class="mi">255</span> <span class="o">/</span> <span class="n">size</span><span class="p">)</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">size</span><span class="p">)]</span>
+    <span class="n">buf</span> <span class="o">=</span> <span class="s">&#39;&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="nb">chr</span><span class="p">,</span> <span class="n">buf</span><span class="p">))</span>
+    <span class="n">writer</span><span class="o">.</span><span class="n">write_frame</span><span class="p">(</span><span class="n">pts</span><span class="o">=</span><span class="n">i</span> <span class="o">/</span> <span class="mf">5.</span><span class="p">,</span> <span class="n">stream</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="nb">buffer</span><span class="o">=</span><span class="n">buf</span><span class="p">)</span>
+</pre></div>
+</div>
 </div>
 </div>
 

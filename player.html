@@ -112,7 +112,7 @@
 <dt id="ffpyplayer.player.MediaPlayer">
 <em class="property">class </em><tt class="descclassname">ffpyplayer.player.</tt><tt class="descname">MediaPlayer</tt><a class="headerlink" href="#ffpyplayer.player.MediaPlayer" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <tt class="xref py py-class docutils literal"><span class="pre">object</span></tt></p>
-<p>MediaPlayer(filename, vid_sink, loglevel=&#8217;error&#8217;, ff_opts={}, thread_lib=&#8217;python&#8217;, audio_sink=&#8217;SDL&#8217;, lib_opts={}, <a href="#id1"><span class="problematic" id="id2">**</span></a>kargs)</p>
+<p>MediaPlayer(filename, callback, loglevel=&#8217;error&#8217;, ff_opts={}, thread_lib=&#8217;python&#8217;, audio_sink=&#8217;SDL&#8217;, lib_opts={}, <a href="#id1"><span class="problematic" id="id2">**</span></a>kargs)</p>
 <p>An FFmpeg based media player.</p>
 <p>Was originally ported from FFplay. Most options offered in FFplay is
 also available here.</p>
@@ -126,16 +126,22 @@ using SDL. And subtitles are acquired either through the callback function
 physical files, remote files or even webcam name&#8217;s e.g. for direct show
 or Video4Linux webcams. The <em>f</em> specifier in <em>ff_opts</em> can be used to
 indicate the format needed to open the file (e.g. dshow).</p>
-<p><em>vid_sink</em> (ref to function): A weak ref to a function that will be called
-when quitting or when text subtitles are available. The function takes
-two parameters, <em>selector</em>, and <em>value</em>. When the player is closing internally
-due to some error the <em>selector</em> will be &#8216;quit&#8217;.
-When a new subtitle string is available, <em>selector</em> will be &#8216;display_sub&#8217;
+<p><em>callback</em> (ref to function): A weak ref to a function that will be called
+when quitting, when eof is reached (determined by whichever is the <em>sync</em>
+stream, audio or video), or when text subtitles are available. The function takes
+two parameters, <em>selector</em>, and <em>value</em>.</p>
+<p>When the player is closing internally due to some error the <em>selector</em> will be &#8216;quit&#8217;.</p>
+<p>When eof is reached the <em>selector</em> will be &#8216;eof&#8217;.</p>
+<p>When a new subtitle string is available, <em>selector</em> will be &#8216;display_sub&#8217;
 and <em>value</em> will be a 5-tuple of the form <em>(text, fmt, pts, start, end)</em>.
 Where <em>text</em> is the text, <em>fmt</em> is the subtitle format e.g. &#8216;ass&#8217;, <em>pts</em>
 is the timestamp of the text, <em>start</em>, and <em>end</em> respectively are the times
 in video time when to start and finish displaying the text.</p>
-<p><em>loglevel</em> (str): The level of logs to emit. It value is one of the keywords
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">This functions gets called from a second internal thread.</p>
+</div>
+<p><em>loglevel</em> (str): The level of logs to emit. Its value is one of the keywords
 defined in <a class="reference internal" href="tools.html#ffpyplayer.tools.loglevels" title="ffpyplayer.tools.loglevels"><tt class="xref py py-attr docutils literal"><span class="pre">ffpyplayer.tools.loglevels</span></tt></a>. Note this only affects
 the default FFmpeg logger, which prints to stderr. You can manipulate the
 log stream directly using <a class="reference internal" href="tools.html#ffpyplayer.tools.set_log_callback" title="ffpyplayer.tools.set_log_callback"><tt class="xref py py-attr docutils literal"><span class="pre">ffpyplayer.tools.set_log_callback</span></tt></a>.</p>
@@ -215,7 +221,7 @@ one of <a class="reference internal" href="tools.html#ffpyplayer.tools.pix_fmts"
 <span class="k">def</span> <span class="nf">callback</span><span class="p">(</span><span class="n">selector</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
     <span class="k">if</span> <span class="n">selector</span> <span class="o">==</span> <span class="s">&#39;quit&#39;</span><span class="p">:</span>
         <span class="k">print</span> <span class="s">&#39;quitting&#39;</span>
-<span class="n">player</span> <span class="o">=</span> <span class="n">MediaPlayer</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="n">vid_sink</span><span class="o">=</span><span class="n">weakref</span><span class="o">.</span><span class="n">ref</span><span class="p">(</span><span class="n">callback</span><span class="p">))</span>
+<span class="n">player</span> <span class="o">=</span> <span class="n">MediaPlayer</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="n">callback</span><span class="o">=</span><span class="n">weakref</span><span class="o">.</span><span class="n">ref</span><span class="p">(</span><span class="n">callback</span><span class="p">))</span>
 <span class="k">while</span> <span class="mi">1</span><span class="p">:</span>
     <span class="n">frame</span><span class="p">,</span> <span class="n">val</span> <span class="o">=</span> <span class="n">player</span><span class="o">.</span><span class="n">get_frame</span><span class="p">()</span>
     <span class="k">if</span> <span class="n">val</span> <span class="o">==</span> <span class="s">&#39;eof&#39;</span><span class="p">:</span>
@@ -336,7 +342,7 @@ have been read until eof.</p>
 <span class="gp">... </span>    <span class="k">if</span> <span class="n">selector</span> <span class="o">==</span> <span class="s">&#39;quit&#39;</span><span class="p">:</span>
 <span class="gp">... </span>        <span class="k">print</span> <span class="s">&#39;quitting&#39;</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">ff_opts</span><span class="o">=</span><span class="p">{</span><span class="s">&#39;use_ref&#39;</span><span class="p">:</span><span class="bp">True</span><span class="p">,</span> <span class="s">&#39;out_fmt&#39;</span><span class="p">:</span><span class="s">&#39;rgb24&#39;</span><span class="p">}</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">player</span> <span class="o">=</span> <span class="n">MediaPlayer</span><span class="p">(</span><span class="s">r&#39;C:\FFmpeg\Blue Streak.mkv&#39;</span><span class="p">,</span> <span class="n">vid_sink</span><span class="o">=</span><span class="n">weakref</span><span class="o">.</span><span class="n">ref</span><span class="p">(</span><span class="n">callback</span><span class="p">),</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">player</span> <span class="o">=</span> <span class="n">MediaPlayer</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="n">callback</span><span class="o">=</span><span class="n">weakref</span><span class="o">.</span><span class="n">ref</span><span class="p">(</span><span class="n">callback</span><span class="p">),</span>
 <span class="gp">... </span>                     <span class="n">ff_opts</span><span class="o">=</span><span class="n">ff_opts</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="k">while</span> <span class="mi">1</span><span class="p">:</span>
 <span class="gp">... </span>    <span class="n">frame</span><span class="p">,</span> <span class="n">val</span> <span class="o">=</span> <span class="n">player</span><span class="o">.</span><span class="n">get_frame</span><span class="p">()</span>
