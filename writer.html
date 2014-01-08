@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>writer &mdash; FFPyPlayer 2.1-dev documentation</title>
+    <title>writer &mdash; FFPyPlayer 3.1-dev documentation</title>
     
     <link rel="stylesheet" href="_static/default.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
@@ -14,7 +14,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    './',
-        VERSION:     '2.1-dev',
+        VERSION:     '3.1-dev',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -23,9 +23,9 @@
     <script type="text/javascript" src="_static/jquery.js"></script>
     <script type="text/javascript" src="_static/underscore.js"></script>
     <script type="text/javascript" src="_static/doctools.js"></script>
-    <link rel="top" title="FFPyPlayer 2.1-dev documentation" href="index.html" />
+    <link rel="top" title="FFPyPlayer 3.1-dev documentation" href="index.html" />
     <link rel="up" title="The FFPyPlayer API" href="api.html" />
-    <link rel="prev" title="tools" href="tools.html" /> 
+    <link rel="prev" title="FFmpeg tools" href="tools.html" /> 
   </head>
   <body>
 
@@ -43,7 +43,7 @@
           <a href="py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
         <li class="right" >
-          <a href="tools.html" title="tools"
+          <a href="tools.html" title="FFmpeg tools"
              accesskey="P">previous</a> |</li>
         <li><a href="index.html">home</a>|&nbsp;</li>
         <li><a href="search.html">search</a>|&nbsp;</li>
@@ -67,7 +67,7 @@
 
   <h4>Previous topic</h4>
   <p class="topless"><a href="tools.html"
-                        title="previous chapter">tools</a></p>
+                        title="previous chapter">FFmpeg tools</a></p>
   <h3>This Page</h3>
   <ul class="this-page-menu">
     <li><a href="_sources/writer.txt"
@@ -121,8 +121,8 @@ available. One can also specify default values for the keywords for
 all streams using <em>kwargs</em>. Keywords also found in <em>streams</em> will
 overwrite those in <em>kwargs</em>:</p>
 <blockquote>
-<div><p><em>pix_fmt_in</em> (str): The pixel format in which buffers will be
-passed to <a class="reference internal" href="#ffpyplayer.writer.MediaWriter.write_frame" title="ffpyplayer.writer.MediaWriter.write_frame"><tt class="xref py py-meth docutils literal"><span class="pre">write_frame()</span></tt></a> for this stream. Can be one of
+<div><p><em>pix_fmt_in</em> (str): The pixel format of the <a class="reference internal" href="pic.html#ffpyplayer.pic.Image" title="ffpyplayer.pic.Image"><tt class="xref py py-class docutils literal"><span class="pre">ffpyplayer.pic.Image</span></tt></a>
+to be passed to <a class="reference internal" href="#ffpyplayer.writer.MediaWriter.write_frame" title="ffpyplayer.writer.MediaWriter.write_frame"><tt class="xref py py-meth docutils literal"><span class="pre">write_frame()</span></tt></a> for this stream. Can be one of
 <a class="reference internal" href="tools.html#ffpyplayer.tools.pix_fmts" title="ffpyplayer.tools.pix_fmts"><tt class="xref py py-attr docutils literal"><span class="pre">ffpyplayer.tools.pix_fmts</span></tt></a>.</p>
 <p><em>pix_fmt_out</em> (str): The pixel format in which frames will be
 written to the file for this stream. Can be one of
@@ -130,8 +130,9 @@ written to the file for this stream. Can be one of
 if not provided. Not every pixel format is supported for each
 encoding codec, see <a class="reference internal" href="tools.html#ffpyplayer.tools.get_supported_pixfmts" title="ffpyplayer.tools.get_supported_pixfmts"><tt class="xref py py-func docutils literal"><span class="pre">ffpyplayer.tools.get_supported_pixfmts()</span></tt></a>
 for which pixel formats are supported for <em>codec</em>.</p>
-<p><em>width_in, height_in</em> (int): The width and height of the frames
-that will be passed to <a class="reference internal" href="#ffpyplayer.writer.MediaWriter.write_frame" title="ffpyplayer.writer.MediaWriter.write_frame"><tt class="xref py py-meth docutils literal"><span class="pre">write_frame()</span></tt></a> for this stream.</p>
+<p><em>width_in, height_in</em> (int): The width and height of the
+<a class="reference internal" href="pic.html#ffpyplayer.pic.Image" title="ffpyplayer.pic.Image"><tt class="xref py py-class docutils literal"><span class="pre">ffpyplayer.pic.Image</span></tt></a> that will be passed to
+<a class="reference internal" href="#ffpyplayer.writer.MediaWriter.write_frame" title="ffpyplayer.writer.MediaWriter.write_frame"><tt class="xref py py-meth docutils literal"><span class="pre">write_frame()</span></tt></a> for this stream.</p>
 <p><em>width_out, height_out</em> (int): The width and height in which frames
 will be written to the file for this stream. Defaults to
 <em>width_in, height_in</em>, respectively, if not provided.</p>
@@ -162,7 +163,8 @@ or a list containing a dict for each stream.</p>
 <p><em>metadata</em> (dict): Metadata that will be written to the streams, if
 supported by the stream. See below for examples. Both the keywords and
 values must be strings. It can be passed a dict in which case it&#8217;ll be
-applied to all the streams or a list containing a dict for each stream.</p>
+applied to all the streams or a list containing a dict for each stream.
+If (these) metadata is not supported, it will silently fail to write them.</p>
 <p><em>loglevel</em> (str): The level of logs to emit. Its value is one of the keywords
 defined in <a class="reference internal" href="tools.html#ffpyplayer.tools.loglevels" title="ffpyplayer.tools.loglevels"><tt class="xref py py-attr docutils literal"><span class="pre">ffpyplayer.tools.loglevels</span></tt></a>. Note this only affects
 the default FFmpeg logger, which prints to stderr. You can manipulate the
@@ -175,67 +177,83 @@ if these keywords are not provided.</p>
 </dd>
 </dl>
 <div class="highlight-python"><div class="highlight"><pre><span class="kn">from</span> <span class="nn">ffpyplayer.writer</span> <span class="kn">import</span> <span class="n">MediaWriter</span>
+<span class="kn">from</span> <span class="nn">ffpyplayer.pic</span> <span class="kn">import</span> <span class="n">Image</span>
 
-<span class="n">w</span> <span class="o">=</span> <span class="mi">640</span>
-<span class="n">h</span> <span class="o">=</span> <span class="mi">480</span>
+<span class="n">w</span><span class="p">,</span> <span class="n">h</span> <span class="o">=</span> <span class="mi">640</span><span class="p">,</span> <span class="mi">480</span>
 <span class="c"># write at 5 fps.</span>
 <span class="n">out_opts</span> <span class="o">=</span> <span class="p">{</span><span class="s">&#39;pix_fmt_in&#39;</span><span class="p">:</span><span class="s">&#39;rgb24&#39;</span><span class="p">,</span> <span class="s">&#39;width_in&#39;</span><span class="p">:</span><span class="n">w</span><span class="p">,</span> <span class="s">&#39;height_in&#39;</span><span class="p">:</span><span class="n">h</span><span class="p">,</span> <span class="s">&#39;codec&#39;</span><span class="p">:</span><span class="s">&#39;rawvideo&#39;</span><span class="p">,</span>
             <span class="s">&#39;frame_rate&#39;</span><span class="p">:(</span><span class="mi">5</span><span class="p">,</span> <span class="mi">1</span><span class="p">)}</span>
 <span class="c"># write using rgb24 frames into a two stream rawvideo file where the output</span>
-<span class="c"># is half the input size for both streams.</span>
-<span class="n">writer</span> <span class="o">=</span> <span class="n">MediaWriter</span><span class="p">(</span><span class="s">&#39;C:\FFmpeg\output.avi&#39;</span><span class="p">,</span> <span class="p">[</span><span class="n">out_opts</span><span class="p">]</span> <span class="o">*</span> <span class="mi">2</span><span class="p">,</span> <span class="n">width_out</span><span class="o">=</span><span class="n">w</span><span class="o">/</span><span class="mi">2</span><span class="p">,</span>
+<span class="c"># is half the input size for both streams. Avi format will be used.</span>
+<span class="n">writer</span> <span class="o">=</span> <span class="n">MediaWriter</span><span class="p">(</span><span class="s">&#39;output.avi&#39;</span><span class="p">,</span> <span class="p">[</span><span class="n">out_opts</span><span class="p">]</span> <span class="o">*</span> <span class="mi">2</span><span class="p">,</span> <span class="n">width_out</span><span class="o">=</span><span class="n">w</span><span class="o">/</span><span class="mi">2</span><span class="p">,</span>
                      <span class="n">height_out</span><span class="o">=</span><span class="n">h</span><span class="o">/</span><span class="mi">2</span><span class="p">)</span>
-<span class="n">size</span> <span class="o">=</span> <span class="n">w</span> <span class="o">*</span> <span class="n">h</span> <span class="o">*</span> <span class="mi">3</span>
-<span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">20</span><span class="p">):</span>
-    <span class="n">buf</span> <span class="o">=</span> <span class="p">[</span><span class="nb">int</span><span class="p">(</span><span class="n">x</span> <span class="o">*</span> <span class="mi">255</span> <span class="o">/</span> <span class="n">size</span><span class="p">)</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">size</span><span class="p">)]</span>
-    <span class="n">buf</span> <span class="o">=</span> <span class="s">&#39;&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="nb">chr</span><span class="p">,</span> <span class="n">buf</span><span class="p">))</span>
-    <span class="n">writer</span><span class="o">.</span><span class="n">write_frame</span><span class="p">(</span><span class="n">pts</span><span class="o">=</span><span class="n">i</span> <span class="o">/</span> <span class="mf">5.</span><span class="p">,</span> <span class="n">stream</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="nb">buffer</span><span class="o">=</span><span class="n">buf</span><span class="p">)</span>
 
-    <span class="n">buf</span> <span class="o">=</span> <span class="p">[</span><span class="nb">int</span><span class="p">((</span><span class="n">size</span> <span class="o">-</span> <span class="n">x</span><span class="p">)</span> <span class="o">*</span> <span class="mi">255</span> <span class="o">/</span> <span class="n">size</span><span class="p">)</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">size</span><span class="p">)]</span>
-    <span class="n">buf</span> <span class="o">=</span> <span class="s">&#39;&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="nb">chr</span><span class="p">,</span> <span class="n">buf</span><span class="p">))</span>
-    <span class="n">writer</span><span class="o">.</span><span class="n">write_frame</span><span class="p">(</span><span class="n">pts</span><span class="o">=</span><span class="n">i</span> <span class="o">/</span> <span class="mf">5.</span><span class="p">,</span> <span class="n">stream</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="nb">buffer</span><span class="o">=</span><span class="n">buf</span><span class="p">)</span>
+<span class="c"># Construct images</span>
+<span class="n">size</span> <span class="o">=</span> <span class="n">w</span> <span class="o">*</span> <span class="n">h</span> <span class="o">*</span> <span class="mi">3</span>
+<span class="n">buf</span> <span class="o">=</span> <span class="p">[</span><span class="nb">int</span><span class="p">(</span><span class="n">x</span> <span class="o">*</span> <span class="mi">255</span> <span class="o">/</span> <span class="n">size</span><span class="p">)</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">size</span><span class="p">)]</span>
+<span class="n">buf</span> <span class="o">=</span> <span class="s">&#39;&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="nb">chr</span><span class="p">,</span> <span class="n">buf</span><span class="p">))</span>
+<span class="n">img</span> <span class="o">=</span> <span class="n">Image</span><span class="p">(</span><span class="n">plane_buffers</span><span class="o">=</span><span class="p">[</span><span class="n">buf</span><span class="p">],</span> <span class="n">pix_fmt</span><span class="o">=</span><span class="s">&#39;rgb24&#39;</span><span class="p">,</span> <span class="n">size</span><span class="o">=</span><span class="p">(</span><span class="n">w</span><span class="p">,</span> <span class="n">h</span><span class="p">))</span>
+
+<span class="n">buf</span> <span class="o">=</span> <span class="p">[</span><span class="nb">int</span><span class="p">((</span><span class="n">size</span> <span class="o">-</span> <span class="n">x</span><span class="p">)</span> <span class="o">*</span> <span class="mi">255</span> <span class="o">/</span> <span class="n">size</span><span class="p">)</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">size</span><span class="p">)]</span>
+<span class="n">buf</span> <span class="o">=</span> <span class="s">&#39;&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="nb">chr</span><span class="p">,</span> <span class="n">buf</span><span class="p">))</span>
+<span class="n">img2</span> <span class="o">=</span> <span class="n">Image</span><span class="p">(</span><span class="n">plane_buffers</span><span class="o">=</span><span class="p">[</span><span class="n">buf</span><span class="p">],</span> <span class="n">pix_fmt</span><span class="o">=</span><span class="s">&#39;rgb24&#39;</span><span class="p">,</span> <span class="n">size</span><span class="o">=</span><span class="p">(</span><span class="n">w</span><span class="p">,</span> <span class="n">h</span><span class="p">))</span>
+
+<span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">20</span><span class="p">):</span>
+    <span class="n">writer</span><span class="o">.</span><span class="n">write_frame</span><span class="p">(</span><span class="n">img</span><span class="o">=</span><span class="n">img</span><span class="p">,</span> <span class="n">pts</span><span class="o">=</span><span class="n">i</span> <span class="o">/</span> <span class="mf">5.</span><span class="p">,</span> <span class="n">stream</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>  <span class="c"># stream 1</span>
+    <span class="n">writer</span><span class="o">.</span><span class="n">write_frame</span><span class="p">(</span><span class="n">img</span><span class="o">=</span><span class="n">img2</span><span class="p">,</span> <span class="n">pts</span><span class="o">=</span><span class="n">i</span> <span class="o">/</span> <span class="mf">5.</span><span class="p">,</span> <span class="n">stream</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>  <span class="c"># stream 2</span>
 </pre></div>
 </div>
 <p>Or force an output format of avi, even though the filename is .mp4.:</p>
-<div class="highlight-python"><div class="highlight"><pre><span class="n">writer</span> <span class="o">=</span> <span class="n">MediaWriter</span><span class="p">(</span><span class="s">&#39;C:\FFmpeg\output.mp4&#39;</span><span class="p">,</span> <span class="p">[</span><span class="n">out_opts</span><span class="p">]</span> <span class="o">*</span> <span class="mi">2</span><span class="p">,</span> <span class="n">fmt</span><span class="o">=</span><span class="s">&#39;avi&#39;</span><span class="p">,</span>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">writer</span> <span class="o">=</span> <span class="n">MediaWriter</span><span class="p">(</span><span class="s">&#39;output.mp4&#39;</span><span class="p">,</span> <span class="p">[</span><span class="n">out_opts</span><span class="p">]</span> <span class="o">*</span> <span class="mi">2</span><span class="p">,</span> <span class="n">fmt</span><span class="o">=</span><span class="s">&#39;avi&#39;</span><span class="p">,</span>
              <span class="n">width_out</span><span class="o">=</span><span class="n">w</span><span class="o">/</span><span class="mi">2</span><span class="p">,</span> <span class="n">height_out</span><span class="o">=</span><span class="n">h</span><span class="o">/</span><span class="mi">2</span><span class="p">)</span>
 </pre></div>
 </div>
-<p>Or writing compressed h264 files:</p>
+<p>Or writing compressed h264 files (notice the file is now only 5KB, while
+the above results in a 10MB file):</p>
 <div class="highlight-python"><div class="highlight"><pre><span class="kn">from</span> <span class="nn">ffpyplayer.writer</span> <span class="kn">import</span> <span class="n">MediaWriter</span>
 <span class="kn">from</span> <span class="nn">ffpyplayer.tools</span> <span class="kn">import</span> <span class="n">get_supported_pixfmts</span><span class="p">,</span> <span class="n">get_supported_framerates</span>
+<span class="kn">from</span> <span class="nn">ffpyplayer.pic</span> <span class="kn">import</span> <span class="n">Image</span>
 
 <span class="c"># make sure the pixel format and rate are supported.</span>
 <span class="k">print</span> <span class="n">get_supported_pixfmts</span><span class="p">(</span><span class="s">&#39;libx264&#39;</span><span class="p">,</span> <span class="s">&#39;rgb24&#39;</span><span class="p">)</span>
 <span class="p">[</span><span class="s">&#39;yuv420p&#39;</span><span class="p">,</span> <span class="s">&#39;yuvj420p&#39;</span><span class="p">,</span> <span class="s">&#39;yuv422p&#39;</span><span class="p">,</span> <span class="s">&#39;yuvj422p&#39;</span><span class="p">,</span> <span class="s">&#39;yuv444p&#39;</span><span class="p">,</span> <span class="s">&#39;yuvj444p&#39;</span><span class="p">,</span> <span class="s">&#39;nv12&#39;</span><span class="p">,</span> <span class="s">&#39;nv16&#39;</span><span class="p">]</span>
 <span class="k">print</span> <span class="n">get_supported_framerates</span><span class="p">(</span><span class="s">&#39;libx264&#39;</span><span class="p">,</span> <span class="p">(</span><span class="mi">5</span><span class="p">,</span> <span class="mi">1</span><span class="p">))</span>
 <span class="p">[]</span>
-<span class="n">w</span> <span class="o">=</span> <span class="mi">640</span>
-<span class="n">h</span> <span class="o">=</span> <span class="mi">480</span>
-<span class="c"># use the half the size for the output as the input</span>
+<span class="n">w</span><span class="p">,</span> <span class="n">h</span> <span class="o">=</span> <span class="mi">640</span><span class="p">,</span> <span class="mi">480</span>
 <span class="n">out_opts</span> <span class="o">=</span> <span class="p">{</span><span class="s">&#39;pix_fmt_in&#39;</span><span class="p">:</span><span class="s">&#39;rgb24&#39;</span><span class="p">,</span> <span class="s">&#39;width_in&#39;</span><span class="p">:</span><span class="n">w</span><span class="p">,</span> <span class="s">&#39;height_in&#39;</span><span class="p">:</span><span class="n">h</span><span class="p">,</span> <span class="s">&#39;codec&#39;</span><span class="p">:</span><span class="s">&#39;libx264&#39;</span><span class="p">,</span>
             <span class="s">&#39;frame_rate&#39;</span><span class="p">:(</span><span class="mi">5</span><span class="p">,</span> <span class="mi">1</span><span class="p">)}</span>
-<span class="c"># write using yuv420p frames into a two stream h264 codec, mp4 file where the output</span>
-<span class="c"># is half the input size for both streams.</span>
 
 <span class="c"># use the following libx264 compression options</span>
 <span class="n">lib_opts</span> <span class="o">=</span> <span class="p">{</span><span class="s">&#39;preset&#39;</span><span class="p">:</span><span class="s">&#39;slow&#39;</span><span class="p">,</span> <span class="s">&#39;crf&#39;</span><span class="p">:</span><span class="s">&#39;22&#39;</span><span class="p">}</span>
 <span class="c"># set the following metadata (ffmpeg doesn&#39;t always support writing metadata)</span>
 <span class="n">metadata</span> <span class="o">=</span> <span class="p">{</span><span class="s">&#39;title&#39;</span><span class="p">:</span><span class="s">&#39;Singing in the sun&#39;</span><span class="p">,</span> <span class="s">&#39;author&#39;</span><span class="p">:</span><span class="s">&#39;Rat&#39;</span><span class="p">,</span> <span class="s">&#39;genre&#39;</span><span class="p">:</span><span class="s">&#39;Animal sounds&#39;</span><span class="p">}</span>
 
-<span class="n">writer</span> <span class="o">=</span> <span class="n">MediaWriter</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="p">[</span><span class="n">out_opts</span><span class="p">]</span> <span class="o">*</span> <span class="mi">2</span><span class="p">,</span> <span class="n">fmt</span><span class="o">=</span><span class="s">&#39;mp4&#39;</span><span class="p">,</span>
+<span class="c"># write using yuv420p frames into a two stream h264 codec, mp4 file where the output</span>
+<span class="c"># is half the input size for both streams.</span>
+<span class="n">writer</span> <span class="o">=</span> <span class="n">MediaWriter</span><span class="p">(</span><span class="s">&#39;output.avi&#39;</span><span class="p">,</span> <span class="p">[</span><span class="n">out_opts</span><span class="p">]</span> <span class="o">*</span> <span class="mi">2</span><span class="p">,</span> <span class="n">fmt</span><span class="o">=</span><span class="s">&#39;mp4&#39;</span><span class="p">,</span>
                      <span class="n">width_out</span><span class="o">=</span><span class="n">w</span><span class="o">/</span><span class="mi">2</span><span class="p">,</span> <span class="n">height_out</span><span class="o">=</span><span class="n">h</span><span class="o">/</span><span class="mi">2</span><span class="p">,</span> <span class="n">pix_fmt_out</span><span class="o">=</span><span class="s">&#39;yuv420p&#39;</span><span class="p">,</span>
                      <span class="n">lib_opts</span><span class="o">=</span><span class="n">lib_opts</span><span class="p">,</span> <span class="n">metadata</span><span class="o">=</span><span class="n">metadata</span><span class="p">)</span>
-<span class="n">size</span> <span class="o">=</span> <span class="n">w</span> <span class="o">*</span> <span class="n">h</span> <span class="o">*</span> <span class="mi">3</span>
-<span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">20</span><span class="p">):</span>
-    <span class="n">buf</span> <span class="o">=</span> <span class="p">[</span><span class="nb">int</span><span class="p">(</span><span class="n">x</span> <span class="o">*</span> <span class="mi">255</span> <span class="o">/</span> <span class="n">size</span><span class="p">)</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">size</span><span class="p">)]</span>
-    <span class="n">buf</span> <span class="o">=</span> <span class="s">&#39;&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="nb">chr</span><span class="p">,</span> <span class="n">buf</span><span class="p">))</span>
-    <span class="n">writer</span><span class="o">.</span><span class="n">write_frame</span><span class="p">(</span><span class="n">pts</span><span class="o">=</span><span class="n">i</span> <span class="o">/</span> <span class="mf">5.</span><span class="p">,</span> <span class="n">stream</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="nb">buffer</span><span class="o">=</span><span class="n">buf</span><span class="p">)</span>
 
-    <span class="n">buf</span> <span class="o">=</span> <span class="p">[</span><span class="nb">int</span><span class="p">((</span><span class="n">size</span> <span class="o">-</span> <span class="n">x</span><span class="p">)</span> <span class="o">*</span> <span class="mi">255</span> <span class="o">/</span> <span class="n">size</span><span class="p">)</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">size</span><span class="p">)]</span>
-    <span class="n">buf</span> <span class="o">=</span> <span class="s">&#39;&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="nb">chr</span><span class="p">,</span> <span class="n">buf</span><span class="p">))</span>
-    <span class="n">writer</span><span class="o">.</span><span class="n">write_frame</span><span class="p">(</span><span class="n">pts</span><span class="o">=</span><span class="n">i</span> <span class="o">/</span> <span class="mf">5.</span><span class="p">,</span> <span class="n">stream</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="nb">buffer</span><span class="o">=</span><span class="n">buf</span><span class="p">)</span>
+<span class="c"># Construct images</span>
+<span class="n">size</span> <span class="o">=</span> <span class="n">w</span> <span class="o">*</span> <span class="n">h</span> <span class="o">*</span> <span class="mi">3</span>
+<span class="n">buf</span> <span class="o">=</span> <span class="p">[</span><span class="nb">int</span><span class="p">(</span><span class="n">x</span> <span class="o">*</span> <span class="mi">255</span> <span class="o">/</span> <span class="n">size</span><span class="p">)</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">size</span><span class="p">)]</span>
+<span class="n">buf</span> <span class="o">=</span> <span class="s">&#39;&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="nb">chr</span><span class="p">,</span> <span class="n">buf</span><span class="p">))</span>
+<span class="n">img</span> <span class="o">=</span> <span class="n">Image</span><span class="p">(</span><span class="n">plane_buffers</span><span class="o">=</span><span class="p">[</span><span class="n">buf</span><span class="p">],</span> <span class="n">pix_fmt</span><span class="o">=</span><span class="s">&#39;rgb24&#39;</span><span class="p">,</span> <span class="n">size</span><span class="o">=</span><span class="p">(</span><span class="n">w</span><span class="p">,</span> <span class="n">h</span><span class="p">))</span>
+
+<span class="n">buf</span> <span class="o">=</span> <span class="p">[</span><span class="nb">int</span><span class="p">((</span><span class="n">size</span> <span class="o">-</span> <span class="n">x</span><span class="p">)</span> <span class="o">*</span> <span class="mi">255</span> <span class="o">/</span> <span class="n">size</span><span class="p">)</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">size</span><span class="p">)]</span>
+<span class="n">buf</span> <span class="o">=</span> <span class="s">&#39;&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="nb">chr</span><span class="p">,</span> <span class="n">buf</span><span class="p">))</span>
+<span class="n">img2</span> <span class="o">=</span> <span class="n">Image</span><span class="p">(</span><span class="n">plane_buffers</span><span class="o">=</span><span class="p">[</span><span class="n">buf</span><span class="p">],</span> <span class="n">pix_fmt</span><span class="o">=</span><span class="s">&#39;rgb24&#39;</span><span class="p">,</span> <span class="n">size</span><span class="o">=</span><span class="p">(</span><span class="n">w</span><span class="p">,</span> <span class="n">h</span><span class="p">))</span>
+
+<span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">20</span><span class="p">):</span>
+    <span class="n">writer</span><span class="o">.</span><span class="n">write_frame</span><span class="p">(</span><span class="n">img</span><span class="o">=</span><span class="n">img</span><span class="p">,</span> <span class="n">pts</span><span class="o">=</span><span class="n">i</span> <span class="o">/</span> <span class="mf">5.</span><span class="p">,</span> <span class="n">stream</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>  <span class="c"># stream 1</span>
+    <span class="n">writer</span><span class="o">.</span><span class="n">write_frame</span><span class="p">(</span><span class="n">img</span><span class="o">=</span><span class="n">img2</span><span class="p">,</span> <span class="n">pts</span><span class="o">=</span><span class="n">i</span> <span class="o">/</span> <span class="mf">5.</span><span class="p">,</span> <span class="n">stream</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>  <span class="c"># stream 2</span>
 </pre></div>
+</div>
+<div class="admonition warning">
+<p class="first admonition-title">Warning</p>
+<p class="last">The file is is not fully written until the MediaWriter instance is deleted
+because data is cached while writing. The encoders are only flushed when
+the instance is deleted.</p>
 </div>
 <dl class="method">
 <dt id="ffpyplayer.writer.MediaWriter.get_configuration">
@@ -244,62 +262,61 @@ if these keywords are not provided.</p>
 in the writer.</p>
 <dl class="docutils">
 <dt><strong>Returns</strong>:</dt>
-<dd>(list): List of dicts for each stream. Among its elements, <em>frame_buffer_size</em>
-indicates the expected buffer size (can be different if a frame ref is
-used). <em>linesize</em>: indicates the linesize of the frame in each of its
-planes (for rgb24, only the first element is non-zero).</dd>
+<dd>(list): List of dicts for each stream.</dd>
 </dl>
-<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">ffpyplayer.writer</span> <span class="kn">import</span> <span class="n">MediaWriter</span>
+<div class="highlight-python"><div class="highlight"><pre><span class="kn">from</span> <span class="nn">ffpyplayer.writer</span> <span class="kn">import</span> <span class="n">MediaWriter</span>
 
-<span class="gp">&gt;&gt;&gt; </span><span class="n">w</span> <span class="o">=</span> <span class="mi">640</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">h</span> <span class="o">=</span> <span class="mi">480</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="c"># use the half the size for the output as the input</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">out_opts</span> <span class="o">=</span> <span class="p">{</span><span class="s">&#39;pix_fmt_in&#39;</span><span class="p">:</span><span class="s">&#39;rgb24&#39;</span><span class="p">,</span> <span class="s">&#39;width_in&#39;</span><span class="p">:</span><span class="n">w</span><span class="p">,</span> <span class="s">&#39;height_in&#39;</span><span class="p">:</span><span class="n">h</span><span class="p">,</span> <span class="s">&#39;codec&#39;</span><span class="p">:</span><span class="s">&#39;rawvideo&#39;</span><span class="p">,</span>
-<span class="gp">... </span>            <span class="s">&#39;frame_rate&#39;</span><span class="p">:(</span><span class="mi">5</span><span class="p">,</span> <span class="mi">1</span><span class="p">)}</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="c"># write using rgb24 frames into a two stream rawvideo file where the output</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="c"># is half the input size for both streams.</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">writer</span> <span class="o">=</span> <span class="n">MediaWriter</span><span class="p">(</span><span class="s">&#39;C:\FFmpeg\output.avi&#39;</span><span class="p">,</span> <span class="p">[</span><span class="n">out_opts</span><span class="p">]</span> <span class="o">*</span> <span class="mi">2</span><span class="p">,</span> <span class="n">width_out</span><span class="o">=</span><span class="n">w</span><span class="o">/</span><span class="mi">2</span><span class="p">,</span> <span class="n">height_out</span><span class="o">=</span><span class="n">h</span><span class="o">/</span><span class="mi">2</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="k">print</span> <span class="n">writer</span><span class="o">.</span><span class="n">get_configuration</span><span class="p">()</span>
-<span class="go">[{&#39;height_in&#39;: 480, &#39;codec&#39;: &#39;rawvideo&#39;, &#39;width_in&#39;: 640, &#39;frame_rate&#39;: (5, 1),</span>
-<span class="go">&#39;pix_fmt_in&#39;: &#39;rgb24&#39;, &#39;width_out&#39;: 320, &#39;linesize&#39;: [1920, 0, 0, 0], &#39;height_out&#39;: 240,</span>
-<span class="go">&#39;pix_fmt_out&#39;: &#39;rgb24&#39;, &#39;frame_buffer_size&#39;: 921600}, {&#39;height_in&#39;: 480, &#39;codec&#39;: &#39;rawvideo&#39;,</span>
-<span class="go">&#39;width_in&#39;: 640, &#39;frame_rate&#39;: (5, 1), &#39;pix_fmt_in&#39;: &#39;rgb24&#39;, &#39;width_out&#39;: 320,</span>
-<span class="go">&#39;linesize&#39;: [1920, 0, 0, 0], &#39;height_out&#39;: 240, &#39;pix_fmt_out&#39;: &#39;rgb24&#39;, &#39;frame_buffer_size&#39;: 921600}]</span>
+<span class="n">w</span><span class="p">,</span> <span class="n">h</span> <span class="o">=</span> <span class="mi">640</span><span class="p">,</span> <span class="mi">480</span>
+<span class="n">out_opts</span> <span class="o">=</span> <span class="p">{</span><span class="s">&#39;pix_fmt_in&#39;</span><span class="p">:</span><span class="s">&#39;rgb24&#39;</span><span class="p">,</span> <span class="s">&#39;width_in&#39;</span><span class="p">:</span><span class="n">w</span><span class="p">,</span> <span class="s">&#39;height_in&#39;</span><span class="p">:</span><span class="n">h</span><span class="p">,</span> <span class="s">&#39;codec&#39;</span><span class="p">:</span><span class="s">&#39;rawvideo&#39;</span><span class="p">,</span>
+            <span class="s">&#39;frame_rate&#39;</span><span class="p">:(</span><span class="mi">5</span><span class="p">,</span> <span class="mi">1</span><span class="p">)}</span>
+<span class="n">writer</span> <span class="o">=</span> <span class="n">MediaWriter</span><span class="p">(</span><span class="s">&#39;output.avi&#39;</span><span class="p">,</span> <span class="p">[</span><span class="n">out_opts</span><span class="p">]</span> <span class="o">*</span> <span class="mi">2</span><span class="p">,</span> <span class="n">width_out</span><span class="o">=</span><span class="n">w</span><span class="o">/</span><span class="mi">2</span><span class="p">,</span> <span class="n">height_out</span><span class="o">=</span><span class="n">h</span><span class="o">/</span><span class="mi">2</span><span class="p">)</span>
+
+<span class="k">print</span> <span class="n">writer</span><span class="o">.</span><span class="n">get_configuration</span><span class="p">()</span>
+<span class="p">[{</span><span class="s">&#39;height_in&#39;</span><span class="p">:</span> <span class="mi">480</span><span class="p">,</span> <span class="s">&#39;codec&#39;</span><span class="p">:</span> <span class="s">&#39;rawvideo&#39;</span><span class="p">,</span> <span class="s">&#39;width_in&#39;</span><span class="p">:</span> <span class="mi">640</span><span class="p">,</span> <span class="s">&#39;frame_rate&#39;</span><span class="p">:</span> <span class="p">(</span><span class="mi">5</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span>
+<span class="s">&#39;pix_fmt_in&#39;</span><span class="p">:</span> <span class="s">&#39;rgb24&#39;</span><span class="p">,</span> <span class="s">&#39;width_out&#39;</span><span class="p">:</span> <span class="mi">320</span><span class="p">,</span> <span class="s">&#39;height_out&#39;</span><span class="p">:</span> <span class="mi">240</span><span class="p">,</span> <span class="s">&#39;pix_fmt_out&#39;</span><span class="p">:</span> <span class="s">&#39;rgb24&#39;</span><span class="p">},</span>
+<span class="p">{</span><span class="s">&#39;height_in&#39;</span><span class="p">:</span> <span class="mi">480</span><span class="p">,</span> <span class="s">&#39;codec&#39;</span><span class="p">:</span> <span class="s">&#39;rawvideo&#39;</span><span class="p">,</span> <span class="s">&#39;width_in&#39;</span><span class="p">:</span> <span class="mi">640</span><span class="p">,</span> <span class="s">&#39;frame_rate&#39;</span><span class="p">:</span> <span class="p">(</span><span class="mi">5</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span>
+<span class="s">&#39;pix_fmt_in&#39;</span><span class="p">:</span> <span class="s">&#39;rgb24&#39;</span><span class="p">,</span> <span class="s">&#39;width_out&#39;</span><span class="p">:</span> <span class="mi">320</span><span class="p">,</span> <span class="s">&#39;height_out&#39;</span><span class="p">:</span> <span class="mi">240</span><span class="p">,</span> <span class="s">&#39;pix_fmt_out&#39;</span><span class="p">:</span> <span class="s">&#39;rgb24&#39;</span><span class="p">}]</span>
 </pre></div>
 </div>
 </dd></dl>
 
 <dl class="method">
 <dt id="ffpyplayer.writer.MediaWriter.write_frame">
-<tt class="descname">write_frame</tt><big>(</big><em>self</em>, <em>double pts</em>, <em>int stream</em>, <em>bytes buffer=&lt;???&gt;</em>, <em>size_t frame_ref=0</em><big>)</big><a class="headerlink" href="#ffpyplayer.writer.MediaWriter.write_frame" title="Permalink to this definition">¶</a></dt>
-<dd><p>Writes a frame to the specified stream.</p>
-<p>Frames can be passed using either the <em>buffer</em> keyword, in which case it
-must be a rgb24 bytes instance. Or if it&#8217;s passed using the <em>frame_ref</em>
-keyword it&#8217;s a refrence to a frame such as one recieved from
-<a class="reference internal" href="player.html#ffpyplayer.player.MediaPlayer.get_frame" title="ffpyplayer.player.MediaPlayer.get_frame"><tt class="xref py py-meth docutils literal"><span class="pre">ffpyplayer.player.MediaPlayer.get_frame()</span></tt></a>.</p>
+<tt class="descname">write_frame</tt><big>(</big><em>self</em>, <em>Image img</em>, <em>double pts</em>, <em>int stream</em><big>)</big><a class="headerlink" href="#ffpyplayer.writer.MediaWriter.write_frame" title="Permalink to this definition">¶</a></dt>
+<dd><p>Writes a <a class="reference internal" href="pic.html#ffpyplayer.pic.Image" title="ffpyplayer.pic.Image"><tt class="xref py py-class docutils literal"><span class="pre">ffpyplayer.pic.Image</span></tt></a> frame to the specified stream.</p>
 <p>If the input data is different than the frame written to disk in either
 size or pixel format as specified when creating the writer, the frame
-is converted before writing.</p>
+is converted before writing. But the input image must match the size and
+format to that specified when creating the writer.</p>
 <dl class="docutils">
 <dt><strong>Args</strong>:</dt>
-<dd><p class="first"><em>pts</em> (float): The timestamp of this frame in video time. E.g. 0.5
-means the frame should be displayed to a player at 0.5 seconds after
+<dd><p class="first"><em>img</em> (<a class="reference internal" href="pic.html#ffpyplayer.pic.Image" title="ffpyplayer.pic.Image"><tt class="xref py py-class docutils literal"><span class="pre">ffpyplayer.pic.Image</span></tt></a>): The <a class="reference internal" href="pic.html#ffpyplayer.pic.Image" title="ffpyplayer.pic.Image"><tt class="xref py py-class docutils literal"><span class="pre">ffpyplayer.pic.Image</span></tt></a>
+instance containing the frame to be written to disk.</p>
+<p><em>pts</em> (float): The timestamp of this frame in video time. E.g. 0.5
+means the frame should be displayed by a player at 0.5 seconds after
 the video started playing. In a sense, the frame rate defines which
 timestamps are valid timestamps. However, this is not always the
 case, so if timestamps are invalid for a particular format, they are
 forced to valid values, if possible.</p>
-<p><em>stream</em> (int): The stream numer to which to write this frame.</p>
-<p><em>buffer</em> (bytes): If not empty it contains a buffer of frame data
-in the form of RGBRGB... The size of the buffer should be equal
-to the &#8216;frame_buffer_size&#8217; parameter returned by
-<a class="reference internal" href="#ffpyplayer.writer.MediaWriter.get_configuration" title="ffpyplayer.writer.MediaWriter.get_configuration"><tt class="xref py py-meth docutils literal"><span class="pre">get_configuration()</span></tt></a>. Defaults to the empty string.</p>
-<p class="last"><em>frame_ref</em> (python int): If non-zero, a refrence to a frame.
-The frame contains the input data, and its pixel format and size
-must match the values specified when creating the writer. E.g.
-width_in etc. This is really a pointer to a valid AVFrame struct.
-Defaults to 0. See <a class="reference internal" href="examples.html#examples"><em>Examples</em></a> for its usage.</p>
+<p class="last"><em>stream</em> (int): The stream number to which to write this frame.</p>
+</dd>
+<dt><strong>Returns</strong>:</dt>
+<dd><p class="first">(int): The approximate number of bytes written to disk so far for
+this file.</p>
+<div class="last admonition note">
+<p class="first admonition-title">Note</p>
+<p>This is not the same as the number of bytes passed to this function
+so far, because the encoders cache data before writing to disk.
+So although some frames may have been passed, the return value
+may not represent this.</p>
+<p class="last">An extereme example is where the same frame is passed many times
+to h264; the encoder will only write this frame when the Writer
+object is deleted and encoders are flushed, so this function
+will only return 0.</p>
+</div>
 </dd>
 </dl>
+<p>See <a class="reference internal" href="examples.html#examples"><em>Examples</em></a> for its usage.</p>
 </dd></dl>
 
 </dd></dl>
@@ -324,7 +341,7 @@ Defaults to 0. See <a class="reference internal" href="examples.html#examples"><
           <a href="py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
         <li class="right" >
-          <a href="tools.html" title="tools"
+          <a href="tools.html" title="FFmpeg tools"
              >previous</a> |</li>
         <li><a href="index.html">home</a>|&nbsp;</li>
         <li><a href="search.html">search</a>|&nbsp;</li>

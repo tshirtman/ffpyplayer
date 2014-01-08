@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>player &mdash; FFPyPlayer 2.1-dev documentation</title>
+    <title>player &mdash; FFPyPlayer 3.1-dev documentation</title>
     
     <link rel="stylesheet" href="_static/default.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
@@ -14,7 +14,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    './',
-        VERSION:     '2.1-dev',
+        VERSION:     '3.1-dev',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -23,10 +23,10 @@
     <script type="text/javascript" src="_static/jquery.js"></script>
     <script type="text/javascript" src="_static/underscore.js"></script>
     <script type="text/javascript" src="_static/doctools.js"></script>
-    <link rel="top" title="FFPyPlayer 2.1-dev documentation" href="index.html" />
+    <link rel="top" title="FFPyPlayer 3.1-dev documentation" href="index.html" />
     <link rel="up" title="The FFPyPlayer API" href="api.html" />
-    <link rel="next" title="tools" href="tools.html" />
-    <link rel="prev" title="The FFPyPlayer API" href="api.html" /> 
+    <link rel="next" title="FFmpeg tools" href="tools.html" />
+    <link rel="prev" title="picture tools" href="pic.html" /> 
   </head>
   <body>
 
@@ -44,10 +44,10 @@
           <a href="py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
         <li class="right" >
-          <a href="tools.html" title="tools"
+          <a href="tools.html" title="FFmpeg tools"
              accesskey="N">next</a> |</li>
         <li class="right" >
-          <a href="api.html" title="The FFPyPlayer API"
+          <a href="pic.html" title="picture tools"
              accesskey="P">previous</a> |</li>
         <li><a href="index.html">home</a>|&nbsp;</li>
         <li><a href="search.html">search</a>|&nbsp;</li>
@@ -70,11 +70,11 @@
 </ul>
 
   <h4>Previous topic</h4>
-  <p class="topless"><a href="api.html"
-                        title="previous chapter">The FFPyPlayer API</a></p>
+  <p class="topless"><a href="pic.html"
+                        title="previous chapter">picture tools</a></p>
   <h4>Next topic</h4>
   <p class="topless"><a href="tools.html"
-                        title="next chapter">tools</a></p>
+                        title="next chapter">FFmpeg tools</a></p>
   <h3>This Page</h3>
   <ul class="this-page-menu">
     <li><a href="_sources/player.txt"
@@ -199,39 +199,34 @@ to overlay subtitles from another media or text file etc. CONFIG_AVFILTER must b
 <p><em>x, y</em> (int): The width and height of the output frames. Similar to
 <a class="reference internal" href="#ffpyplayer.player.MediaPlayer.set_size" title="ffpyplayer.player.MediaPlayer.set_size"><tt class="xref py py-meth docutils literal"><span class="pre">set_size()</span></tt></a>. CONFIG_AVFILTER must be True (the default) when
 compiling in order to use this. Defaults to 0.</p>
-<p><em>use_ref</em> (bool): If True, a refrence to the original data will be returned by
-<a class="reference internal" href="#ffpyplayer.player.MediaPlayer.get_frame" title="ffpyplayer.player.MediaPlayer.get_frame"><tt class="xref py py-meth docutils literal"><span class="pre">get_frame()</span></tt></a> instead of a copy.</p>
-<div class="admonition note">
-<p class="first admonition-title">Note</p>
-<p class="last">Note, this is not available (MUST be False) if CONFIG_AVFILTER was False
-when compiling and the pixel format of the video source is different
-than the output format. See <a class="reference internal" href="#ffpyplayer.player.MediaPlayer.get_frame" title="ffpyplayer.player.MediaPlayer.get_frame"><tt class="xref py py-meth docutils literal"><span class="pre">get_frame()</span></tt></a>. Defaults to False.</p>
-</div>
-<p><em>out_fmt</em> (str): The pixel format of the data returned by <a class="reference internal" href="#ffpyplayer.player.MediaPlayer.get_frame" title="ffpyplayer.player.MediaPlayer.get_frame"><tt class="xref py py-meth docutils literal"><span class="pre">get_frame()</span></tt></a>. Must be
+<p><em>out_fmt</em> (str): The pixel format of the data returned by <a class="reference internal" href="#ffpyplayer.player.MediaPlayer.get_frame" title="ffpyplayer.player.MediaPlayer.get_frame"><tt class="xref py py-meth docutils literal"><span class="pre">get_frame()</span></tt></a>. Can be
 one of <a class="reference internal" href="tools.html#ffpyplayer.tools.pix_fmts" title="ffpyplayer.tools.pix_fmts"><tt class="xref py py-attr docutils literal"><span class="pre">ffpyplayer.tools.pix_fmts</span></tt></a>. Defaults to rgb24.</p>
-<div class="admonition note">
-<p class="first admonition-title">Note</p>
-<p class="last">If <em>use_ref</em> is False this must be rgb24.</p>
-</div>
 </div></blockquote>
 </dd>
 </dl>
-<div class="highlight-python"><div class="highlight"><pre><span class="kn">from</span> <span class="nn">ffpyplayer.player</span> <span class="kn">import</span> <span class="n">MediaPlayer</span>
-<span class="kn">import</span> <span class="nn">time</span><span class="o">,</span> <span class="nn">weakref</span>
-<span class="k">def</span> <span class="nf">callback</span><span class="p">(</span><span class="n">selector</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
-    <span class="k">if</span> <span class="n">selector</span> <span class="o">==</span> <span class="s">&#39;quit&#39;</span><span class="p">:</span>
-        <span class="k">print</span> <span class="s">&#39;quitting&#39;</span>
-<span class="n">player</span> <span class="o">=</span> <span class="n">MediaPlayer</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="n">callback</span><span class="o">=</span><span class="n">weakref</span><span class="o">.</span><span class="n">ref</span><span class="p">(</span><span class="n">callback</span><span class="p">))</span>
-<span class="k">while</span> <span class="mi">1</span><span class="p">:</span>
-    <span class="n">frame</span><span class="p">,</span> <span class="n">val</span> <span class="o">=</span> <span class="n">player</span><span class="o">.</span><span class="n">get_frame</span><span class="p">()</span>
-    <span class="k">if</span> <span class="n">val</span> <span class="o">==</span> <span class="s">&#39;eof&#39;</span><span class="p">:</span>
-        <span class="k">break</span>
-    <span class="k">elif</span> <span class="n">frame</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
-        <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mf">0.01</span><span class="p">)</span>
-    <span class="k">else</span><span class="p">:</span>
-        <span class="k">print</span> <span class="n">val</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">frame</span><span class="p">[</span><span class="mi">0</span><span class="p">]),</span> <span class="n">frame</span><span class="p">[</span><span class="mi">1</span><span class="p">:]</span>
-        <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="n">val</span><span class="p">)</span>
-</pre></div>
+<p>A simple player:</p>
+<div class="highlight-python"><pre>from ffpyplayer.player import MediaPlayer
+import time, weakref
+def callback(selector, value):
+    if selector == 'quit':
+        print 'quitting'
+player = MediaPlayer(filename, callback=weakref.ref(callback))
+while 1:
+    frame, val = player.get_frame()
+    if val == 'eof':
+        break
+    elif frame is None:
+        time.sleep(0.01)
+    else:
+        img, t = frame
+        print val, t, img.get_pixel_format(), img.get_buffer_size()
+        time.sleep(val)
+0.0 0.0 rgb24 (929280, 0, 0, 0)
+0.0 0.0611284 rgb24 (929280, 0, 0, 0)
+0.0411274433136 0.1222568 rgb24 (929280, 0, 0, 0)
+0.122380971909 0.1833852 rgb24 (929280, 0, 0, 0)
+0.121630907059 0.2445136 rgb24 (929280, 0, 0, 0)
+...</pre>
 </div>
 <p>See <a class="reference internal" href="tools.html#ffpyplayer.tools.list_dshow_devices" title="ffpyplayer.tools.list_dshow_devices"><tt class="xref py py-meth docutils literal"><span class="pre">ffpyplayer.tools.list_dshow_devices()</span></tt></a> for a more complex example.
 See also <a class="reference internal" href="examples.html#examples"><em>Examples</em></a>.</p>
@@ -240,47 +235,27 @@ See also <a class="reference internal" href="examples.html#examples"><em>Example
 <dt id="ffpyplayer.player.MediaPlayer.get_frame">
 <tt class="descname">get_frame</tt><big>(</big><em>self</em>, <em>force_refresh=False</em>, <em>*args</em><big>)</big><a class="headerlink" href="#ffpyplayer.player.MediaPlayer.get_frame" title="Permalink to this definition">¶</a></dt>
 <dd><p>Retrieves the next available frame if ready.</p>
-<p>Two types of frames are returned: a single bytes buffer containing the
-data in RGBRGB... format if <em>use_ref</em> is False. Otherwise a refrence to the
-original frame buffers if <em>use_ref</em> is True, and the buffers can represent
-any pixel format. In the former case, the data is copied, while in the
-latter case pointers to the original data are retured which <strong>MUST</strong> be freed
-by the user after use by calling <a class="reference internal" href="tools.html#ffpyplayer.tools.free_frame_ref" title="ffpyplayer.tools.free_frame_ref"><tt class="xref py py-func docutils literal"><span class="pre">ffpyplayer.tools.free_frame_ref()</span></tt></a>.</p>
+<p>The frame is returned as a <a class="reference internal" href="pic.html#ffpyplayer.pic.Image" title="ffpyplayer.pic.Image"><tt class="xref py py-class docutils literal"><span class="pre">ffpyplayer.pic.Image</span></tt></a>. If CONFIG_AVFILTER
+is True when compiling, or if the video pixel format is the same as the
+output pixel format, the Image returned is just a new refrence to the internal
+buffers and no copying occurs (see <a class="reference internal" href="pic.html#ffpyplayer.pic.Image" title="ffpyplayer.pic.Image"><tt class="xref py py-class docutils literal"><span class="pre">ffpyplayer.pic.Image</span></tt></a>), otherwise
+the buffers are newly created and copied.</p>
 <dl class="docutils">
 <dt><strong>Args</strong>:</dt>
-<dd><em>force_refresh</em> (bool): If True, the last frame will be returned again.
-Note, if returning a frame refrence, each call will return a new refrence.
-Defaults to False.</dd>
+<dd><em>force_refresh</em> (bool): If True, a new instance of the last frame will
+be returned again. Defaults to False.</dd>
 <dt><strong>Returns</strong>:</dt>
 <dd><p class="first"><em>(frame, val)</em>.
-<em>frame</em> is None or a 4-tuple.
+<em>frame</em> is None or a 2-tuple.
 <em>val</em> is either &#8216;paused&#8217;, &#8216;eof&#8217;, or a float.</p>
 <p>If <em>val</em> is either &#8216;paused&#8217; or &#8216;eof&#8217;, <em>frame</em> is None. Otherwise, if
 <em>frame</em> is not None, <em>val</em> is the realtime time one should wait before
 displaying this frame to the user to achieve a play rate of 1.0.</p>
-<p>If <em>frame</em> is not None it&#8217;s a 4-tuple - <em>(buffer, size, linesizes, pts)</em>:</p>
+<p>If <em>frame</em> is not None it&#8217;s a 2-tuple - <em>(image, pts)</em>:</p>
 <blockquote class="last">
-<div><p><em>buffer</em>: If <em>use_ref</em> is False, it&#8217;s a bytes buffer containing the
-frmae in RGBRGB... format. If <em>use_ref</em> is True, it&#8217;s a 3-tuple of
-the format <em>(ref, data, format)</em>:</p>
-<div class="highlight-python"><pre>*ref* is a refernce to a the frame and is passed to
-:func:`ffpyplayer.tools.free_frame_ref` when freeing.
-
-*data* is a 4 element list, where each element is a size_t value
-which is char pointer to an array holding the data for this plane,
-or 0 (NULL), when the plane has no data.
-
-*format* is the pixel format of the frame in the form of
-:attr:`ffpyplayer.tools.pix_fmts`.</pre>
-</div>
-<p><em>size</em> is a 2-tuple of (width, height) of the frame. Because the video
-can be dynamically resized these values can change between frames.</p>
-<p><em>linesizes</em> is a 4 element list of the line width of each plane in the frame.
-For example, with rgb24, only the first element wil be none-zero
-since rgb only has one plane. Typically it should be the same as width multiplied
-by the number of bytes in each pixel, however, sometimes it&#8217;s larger due to padding.
-If <em>use_ref</em> is False, only the first element will be none-zero, and its
-value will be width * 3.</p>
+<div><p><em>image</em>: The <a class="reference internal" href="pic.html#ffpyplayer.pic.Image" title="ffpyplayer.pic.Image"><tt class="xref py py-class docutils literal"><span class="pre">ffpyplayer.pic.Image</span></tt></a> instance containing
+the frame. The size of the image can change because the output
+can be resized dynamically (see <a class="reference internal" href="#ffpyplayer.player.MediaPlayer.set_size" title="ffpyplayer.player.MediaPlayer.set_size"><tt class="xref py py-meth docutils literal"><span class="pre">set_size()</span></tt></a>).</p>
 <p><em>pts</em> is the presentation timestamp of this frame. This is the time
 when the frame should be displayed to the user in video time (i.e.
 not realtime).</p>
@@ -304,14 +279,15 @@ have been read until eof.</p>
 <span class="gp">... </span>        <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mf">0.01</span><span class="p">)</span>
 <span class="gp">... </span>        <span class="k">print</span> <span class="s">&#39;not ready&#39;</span>
 <span class="gp">... </span>    <span class="k">else</span><span class="p">:</span>
-<span class="gp">... </span>        <span class="k">print</span> <span class="n">val</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">frame</span><span class="p">[</span><span class="mi">0</span><span class="p">]),</span> <span class="n">frame</span><span class="p">[</span><span class="mi">1</span><span class="p">:]</span>
+<span class="gp">... </span>        <span class="n">img</span><span class="p">,</span> <span class="n">t</span> <span class="o">=</span> <span class="n">frame</span>
+<span class="gp">... </span>        <span class="k">print</span> <span class="n">val</span><span class="p">,</span> <span class="n">t</span><span class="p">,</span> <span class="n">img</span>
 <span class="go">not ready</span>
-<span class="go">0.0 1013760 ((704, 480), [2112, 0, 0, 0], 0.0)</span>
-<span class="go">0.0 1013760 ((704, 480), [2112, 0, 0, 0], 0.033)</span>
-<span class="gp">...</span>
-<span class="go">24.731872797 1013760 ((704, 480), [2112, 0, 0, 0], 13.881)</span>
+<span class="go">0.0 0.0 &lt;ffpyplayer.pic.Image object at 0x023D17B0&gt;</span>
 <span class="go">not ready</span>
-<span class="go">24.7868728638 1013760 ((704, 480), [2112, 0, 0, 0], 13.914)</span>
+<span class="go">0.0351264476776 0.0611284 &lt;ffpyplayer.pic.Image object at 0x023D1828&gt;</span>
+<span class="go">0.096254825592 0.1222568 &lt;ffpyplayer.pic.Image object at 0x02411800&gt;</span>
+<span class="go">not ready</span>
+<span class="go">0.208511352539 0.1833852 &lt;ffpyplayer.pic.Image object at 0x02411B70&gt;</span>
 </pre></div>
 </div>
 <p>vs displaying frames at their proper times:</p>
@@ -323,56 +299,43 @@ have been read until eof.</p>
 <span class="gp">... </span>        <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mf">0.01</span><span class="p">)</span>
 <span class="gp">... </span>        <span class="k">print</span> <span class="s">&#39;not ready&#39;</span>
 <span class="gp">... </span>    <span class="k">else</span><span class="p">:</span>
-<span class="gp">... </span>        <span class="k">print</span> <span class="n">val</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">frame</span><span class="p">[</span><span class="mi">0</span><span class="p">]),</span> <span class="n">frame</span><span class="p">[</span><span class="mi">1</span><span class="p">:]</span>
+<span class="gp">... </span>        <span class="n">img</span><span class="p">,</span> <span class="n">t</span> <span class="o">=</span> <span class="n">frame</span>
+<span class="gp">... </span>        <span class="k">print</span> <span class="n">val</span><span class="p">,</span> <span class="n">t</span><span class="p">,</span> <span class="n">img</span>
 <span class="gp">... </span>        <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="n">val</span><span class="p">)</span>
 <span class="go">not ready</span>
-<span class="go">0.0 1013760 ((704, 480), 2112, 0.0)</span>
-<span class="go">0.0 1013760 ((704, 480), 2112, 0.033)</span>
+<span class="go">0.0 0.0 &lt;ffpyplayer.pic.Image object at 0x02411800&gt;</span>
+<span class="go">not ready</span>
+<span class="go">0.0351274013519 0.0611284 &lt;ffpyplayer.pic.Image object at 0x02411878&gt;</span>
+<span class="go">0.0602538585663 0.1222568 &lt;ffpyplayer.pic.Image object at 0x024118A0&gt;</span>
+<span class="go">0.122507572174 0.1833852 &lt;ffpyplayer.pic.Image object at 0x024118C8&gt;</span>
 <span class="gp">...</span>
-<span class="go">0.031772851944 1013760 ((704, 480), [2112, 0, 0, 0], 20.954)</span>
-<span class="go">0.030770778656 1013760 ((704, 480), [2112, 0, 0, 0], 20.988)</span>
-<span class="go">0.0307686328888 1013760 ((704, 480), [2112, 0, 0, 0], 21.021)</span>
+<span class="go">0.0607514381409 1.222568 &lt;ffpyplayer.pic.Image object at 0x02411B70&gt;</span>
+<span class="go">0.0618767738342 1.2836964 &lt;ffpyplayer.pic.Image object at 0x02411B98&gt;</span>
+<span class="go">0.0610010623932 1.3448248 &lt;ffpyplayer.pic.Image object at 0x02411BC0&gt;</span>
+<span class="go">0.0611264705658 1.4059532 &lt;ffpyplayer.pic.Image object at 0x02411BE8&gt;</span>
 </pre></div>
 </div>
-<p>When <em>use_ref</em> is set to True and output format is rgb24:</p>
-<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">ffpyplayer.player</span> <span class="kn">import</span> <span class="n">MediaPlayer</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">ffpyplayer.tools</span> <span class="kn">import</span> <span class="n">free_frame_ref</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">time</span><span class="o">,</span> <span class="nn">weakref</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="k">def</span> <span class="nf">callback</span><span class="p">(</span><span class="n">selector</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
-<span class="gp">... </span>    <span class="k">if</span> <span class="n">selector</span> <span class="o">==</span> <span class="s">&#39;quit&#39;</span><span class="p">:</span>
-<span class="gp">... </span>        <span class="k">print</span> <span class="s">&#39;quitting&#39;</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">ff_opts</span><span class="o">=</span><span class="p">{</span><span class="s">&#39;use_ref&#39;</span><span class="p">:</span><span class="bp">True</span><span class="p">,</span> <span class="s">&#39;out_fmt&#39;</span><span class="p">:</span><span class="s">&#39;rgb24&#39;</span><span class="p">}</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">player</span> <span class="o">=</span> <span class="n">MediaPlayer</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="n">callback</span><span class="o">=</span><span class="n">weakref</span><span class="o">.</span><span class="n">ref</span><span class="p">(</span><span class="n">callback</span><span class="p">),</span>
-<span class="gp">... </span>                     <span class="n">ff_opts</span><span class="o">=</span><span class="n">ff_opts</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="k">while</span> <span class="mi">1</span><span class="p">:</span>
-<span class="gp">... </span>    <span class="n">frame</span><span class="p">,</span> <span class="n">val</span> <span class="o">=</span> <span class="n">player</span><span class="o">.</span><span class="n">get_frame</span><span class="p">()</span>
-<span class="gp">... </span>    <span class="k">if</span> <span class="n">val</span> <span class="o">==</span> <span class="s">&#39;eof&#39;</span><span class="p">:</span>
-<span class="gp">... </span>        <span class="k">break</span>
-<span class="gp">... </span>    <span class="k">elif</span> <span class="n">frame</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
-<span class="gp">... </span>        <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mf">0.01</span><span class="p">)</span>
-<span class="gp">... </span>    <span class="k">else</span><span class="p">:</span>
-<span class="gp">... </span>        <span class="k">print</span> <span class="n">val</span><span class="p">,</span> <span class="n">frame</span>
-<span class="gp">... </span>        <span class="n">free_frame_ref</span><span class="p">(</span><span class="n">frame</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">0</span><span class="p">])</span>
-<span class="gp">... </span>        <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="n">val</span><span class="p">)</span>
-<span class="go">0.0 ((112487968, [124911680, 0, 0, 0], &#39;rgb24&#39;), (1280, 688), [3840, 0, 0, 0], 0.0)</span>
-<span class="go">0.0 ((112488480, [146931776, 0, 0, 0], &#39;rgb24&#39;), (1280, 688), [3840, 0, 0, 0], 0.042)</span>
-<span class="go">0.0139961242676 ((112488480, [153288768, 0, 0, 0], &#39;rgb24&#39;), (1280, 688), [3840, 0, 0, 0], 0.083)</span>
-<span class="go">0.0389950275421 ((112488480, [158728256, 0, 0, 0], &#39;rgb24&#39;), (1280, 688), [3840, 0, 0, 0], 0.125)</span>
-<span class="go">0.0759932994843 ((112489536, [124911680, 0, 0, 0], &#39;rgb24&#39;), (1280, 688), [3840, 0, 0, 0], 0.167)</span>
-</pre></div>
-</div>
-<p>Or when <em>use_ref</em> is set to True and output format is yuv420p:</p>
+<p>Or when the output format is yuv420p:</p>
 <div class="highlight-python"><pre>...
-&gt;&gt;&gt; ff_opts={'use_ref':True, 'out_fmt':'yuv420p'}
+&gt;&gt;&gt; player = MediaPlayer(filename, callback=weakref.ref(callback),
+... ff_opts={'out_fmt':'yuv420p'})
+&gt;&gt;&gt; while 1:
+...     frame, val = player.get_frame()
+...     if val == 'eof':
+...         break
+...     elif frame is None:
+...         time.sleep(0.01)
+...         print 'not ready'
+...     else:
+...         img, t = frame
+...         print val, t, img.get_pixel_format(), img.get_buffer_size()
+...         time.sleep(val)
 ...
-0.0 ((122377824, [115736640, 111274016, 111527200, 0], 'yuv420p'), (1280, 688),
-[1280, 640, 640, 0], 0.042)
-0.0179960727692 ((122378848, [114819136, 108882720, 109108704, 0], 'yuv420p'), (1280, 688),
-[1280, 640, 640, 0], 0.083)
-0.0379951000214 ((122378848, [118947904, 113728128, 113991520, 0], 'yuv420p'), (1280, 688),
-[1280, 640, 640, 0], 0.125)
-0.0769922733307 ((122379392, [105513024, 66005920, 106430560, 0], 'yuv420p'), (1280, 688),
-[1280, 640, 640, 0], 0.167)</pre>
+0.0 0.0 yuv420p (309760, 77440, 77440, 0)
+0.0361273288727 0.0611284 yuv420p (309760, 77440, 77440, 0)
+0.0502526760101 0.1222568 yuv420p (309760, 77440, 77440, 0)
+0.12150645256 0.1833852 yuv420p (309760, 77440, 77440, 0)
+0.122756242752 0.2445136 yuv420p (309760, 77440, 77440, 0)</pre>
 </div>
 </dd></dl>
 
@@ -471,18 +434,18 @@ or in time. In some instances seeking by bytes may be more accurate
 (don&#8217;t ask me which).</p>
 </dd>
 </dl>
-<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="k">print</span> <span class="n">player</span><span class="o">.</span><span class="n">get_frame</span><span class="p">()[</span><span class="mi">0</span><span class="p">][</span><span class="mi">1</span><span class="p">:]</span>
-<span class="go">((1280, 688), [3840, 0, 0, 0], 1016.392)</span>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="k">print</span> <span class="n">player</span><span class="o">.</span><span class="n">get_frame</span><span class="p">()[</span><span class="mi">0</span><span class="p">][</span><span class="mi">1</span><span class="p">]</span>
+<span class="go">1016.392</span>
 
 <span class="gp">&gt;&gt;&gt; </span><span class="n">player</span><span class="o">.</span><span class="n">seek</span><span class="p">(</span><span class="mf">200.</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">player</span><span class="o">.</span><span class="n">get_frame</span><span class="p">()</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="k">print</span> <span class="n">player</span><span class="o">.</span><span class="n">get_frame</span><span class="p">()[</span><span class="mi">0</span><span class="p">][</span><span class="mi">1</span><span class="p">:]</span>
-<span class="go">((1280, 688), [3840, 0, 0, 0], 1249.876)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">print</span> <span class="n">player</span><span class="o">.</span><span class="n">get_frame</span><span class="p">()[</span><span class="mi">0</span><span class="p">][</span><span class="mi">1</span><span class="p">]</span>
+<span class="go">1249.876</span>
 
 <span class="gp">&gt;&gt;&gt; </span><span class="n">player</span><span class="o">.</span><span class="n">seek</span><span class="p">(</span><span class="mi">200</span><span class="p">,</span> <span class="n">relative</span><span class="o">=</span><span class="bp">False</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">player</span><span class="o">.</span><span class="n">get_frame</span><span class="p">()</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="k">print</span> <span class="n">player</span><span class="o">.</span><span class="n">get_frame</span><span class="p">()[</span><span class="mi">0</span><span class="p">][</span><span class="mi">1</span><span class="p">:]</span>
-<span class="go">((1280, 688), [3840, 0, 0, 0], 198.49)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">print</span> <span class="n">player</span><span class="o">.</span><span class="n">get_frame</span><span class="p">()[</span><span class="mi">0</span><span class="p">][</span><span class="mi">1</span><span class="p">]</span>
+<span class="go">198.49</span>
 </pre></div>
 </div>
 <p>Note that it may take a few calls to get new frames after seeking.</p>
@@ -499,34 +462,34 @@ A value of 0 will set that parameter to the source height/width.
 A value of -1 for one of the parameters, will result in a value of that
 parameter that maintains the original aspect ratio.</dd>
 </dl>
-<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="k">print</span> <span class="n">player</span><span class="o">.</span><span class="n">get_frame</span><span class="p">()[</span><span class="mi">0</span><span class="p">][</span><span class="mi">1</span><span class="p">:]</span>
-<span class="go">((704, 480), [2112, 0, 0, 0], 0.067)</span>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="k">print</span> <span class="n">player</span><span class="o">.</span><span class="n">get_frame</span><span class="p">()[</span><span class="mi">0</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">get_size</span><span class="p">()</span>
+<span class="go">(704, 480)</span>
 
 <span class="gp">&gt;&gt;&gt; </span><span class="n">player</span><span class="o">.</span><span class="n">set_size</span><span class="p">(</span><span class="mi">200</span><span class="p">,</span> <span class="mi">200</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="k">print</span> <span class="n">player</span><span class="o">.</span><span class="n">get_frame</span><span class="p">()[</span><span class="mi">0</span><span class="p">][</span><span class="mi">1</span><span class="p">:]</span>
-<span class="go">((704, 480), [2112, 0, 0, 0], 0.1)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="k">print</span> <span class="n">player</span><span class="o">.</span><span class="n">get_frame</span><span class="p">()[</span><span class="mi">0</span><span class="p">][</span><span class="mi">1</span><span class="p">:]</span>
-<span class="go">((704, 480), [2112, 0, 0, 0], 0.133)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="k">print</span> <span class="n">player</span><span class="o">.</span><span class="n">get_frame</span><span class="p">()[</span><span class="mi">0</span><span class="p">][</span><span class="mi">1</span><span class="p">:]</span>
-<span class="go">((704, 480), [2112, 0, 0, 0], 0.167)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="k">print</span> <span class="n">player</span><span class="o">.</span><span class="n">get_frame</span><span class="p">()[</span><span class="mi">0</span><span class="p">][</span><span class="mi">1</span><span class="p">:]</span>
-<span class="go">((200, 200), [600, 0, 0, 0], 0.2)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">print</span> <span class="n">player</span><span class="o">.</span><span class="n">get_frame</span><span class="p">()[</span><span class="mi">0</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">get_size</span><span class="p">()</span>
+<span class="go">(704, 480)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">print</span> <span class="n">player</span><span class="o">.</span><span class="n">get_frame</span><span class="p">()[</span><span class="mi">0</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">get_size</span><span class="p">()</span>
+<span class="go">(704, 480)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">print</span> <span class="n">player</span><span class="o">.</span><span class="n">get_frame</span><span class="p">()[</span><span class="mi">0</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">get_size</span><span class="p">()</span>
+<span class="go">(704, 480)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">print</span> <span class="n">player</span><span class="o">.</span><span class="n">get_frame</span><span class="p">()[</span><span class="mi">0</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">get_size</span><span class="p">()</span>
+<span class="go">(200, 200)</span>
 
 <span class="gp">&gt;&gt;&gt; </span><span class="n">player</span><span class="o">.</span><span class="n">set_size</span><span class="p">(</span><span class="mi">200</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="k">print</span> <span class="n">player</span><span class="o">.</span><span class="n">get_frame</span><span class="p">()[</span><span class="mi">0</span><span class="p">][</span><span class="mi">1</span><span class="p">:]</span>
-<span class="go">((200, 200), [600, 0, 0, 0], 0.234)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="k">print</span> <span class="n">player</span><span class="o">.</span><span class="n">get_frame</span><span class="p">()[</span><span class="mi">0</span><span class="p">][</span><span class="mi">1</span><span class="p">:]</span>
-<span class="go">((200, 200), [600, 0, 0, 0], 0.267)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="k">print</span> <span class="n">player</span><span class="o">.</span><span class="n">get_frame</span><span class="p">()[</span><span class="mi">0</span><span class="p">][</span><span class="mi">1</span><span class="p">:]</span>
-<span class="go">((200, 480), [600, 0, 0, 0], 0.3)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">print</span> <span class="n">player</span><span class="o">.</span><span class="n">get_frame</span><span class="p">()[</span><span class="mi">0</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">get_size</span><span class="p">()</span>
+<span class="go">(200, 200)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">print</span> <span class="n">player</span><span class="o">.</span><span class="n">get_frame</span><span class="p">()[</span><span class="mi">0</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">get_size</span><span class="p">()</span>
+<span class="go">(200, 200)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">print</span> <span class="n">player</span><span class="o">.</span><span class="n">get_frame</span><span class="p">()[</span><span class="mi">0</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">get_size</span><span class="p">()</span>
+<span class="go">(200, 480)</span>
 
 <span class="gp">&gt;&gt;&gt; </span><span class="n">player</span><span class="o">.</span><span class="n">set_size</span><span class="p">(</span><span class="mi">200</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="k">print</span> <span class="n">player</span><span class="o">.</span><span class="n">get_frame</span><span class="p">()[</span><span class="mi">0</span><span class="p">][</span><span class="mi">1</span><span class="p">:]</span>
-<span class="go">((200, 480), [600, 0, 0, 0], 0.334)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="k">print</span> <span class="n">player</span><span class="o">.</span><span class="n">get_frame</span><span class="p">()[</span><span class="mi">0</span><span class="p">][</span><span class="mi">1</span><span class="p">:]</span>
-<span class="go">((200, 480), [600, 0, 0, 0], 0.367)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="k">print</span> <span class="n">player</span><span class="o">.</span><span class="n">get_frame</span><span class="p">()[</span><span class="mi">0</span><span class="p">][</span><span class="mi">1</span><span class="p">:]</span>
-<span class="go">((200, 136), [600, 0, 0, 0], 0.4)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">print</span> <span class="n">player</span><span class="o">.</span><span class="n">get_frame</span><span class="p">()[</span><span class="mi">0</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">get_size</span><span class="p">()</span>
+<span class="go">(200, 480)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">print</span> <span class="n">player</span><span class="o">.</span><span class="n">get_frame</span><span class="p">()[</span><span class="mi">0</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">get_size</span><span class="p">()</span>
+<span class="go">(200, 480)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">print</span> <span class="n">player</span><span class="o">.</span><span class="n">get_frame</span><span class="p">()[</span><span class="mi">0</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">get_size</span><span class="p">()</span>
+<span class="go">(200, 136)</span>
 </pre></div>
 </div>
 <p>Note that it takes a few calls to flush the old frames.</p>
@@ -580,10 +543,10 @@ an error.</p>
           <a href="py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
         <li class="right" >
-          <a href="tools.html" title="tools"
+          <a href="tools.html" title="FFmpeg tools"
              >next</a> |</li>
         <li class="right" >
-          <a href="api.html" title="The FFPyPlayer API"
+          <a href="pic.html" title="picture tools"
              >previous</a> |</li>
         <li><a href="index.html">home</a>|&nbsp;</li>
         <li><a href="search.html">search</a>|&nbsp;</li>
