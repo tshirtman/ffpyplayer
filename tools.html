@@ -209,50 +209,76 @@ will be returned as the zero&#8217;th element in the list.</dd>
 <dt id="ffpyplayer.tools.list_dshow_devices">
 <tt class="descclassname">ffpyplayer.tools.</tt><tt class="descname">list_dshow_devices</tt><big>(</big><big>)</big><a class="headerlink" href="#ffpyplayer.tools.list_dshow_devices" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns a list of the dshow devices available.</p>
-<dl class="docutils">
-<dt><strong>Returns</strong>:</dt>
-<dd><em>(2-tuple)</em>: A 2-tuple, where the first element is a list of the names of
-all the direct show <strong>video</strong> devices and the second element is a list of
-the names of all the direct show <strong>audio</strong> devices available for reading.</dd>
+<p><strong>Returns</strong>:</p>
+<blockquote>
+<div><dl class="docutils">
+<dt><em>(2-tuple)</em>: A 2-tuple, of (<cite>video</cite>, <cite>audio</cite>)</dt>
+<dd><cite>video</cite> is a dict all the direct show <strong>video</strong> devices. The keys
+of the dict are the names of the available direct show devices. The values
+are a list of the available configurations for that device. Each
+element in the list has the following format:
+<tt class="docutils literal"><span class="pre">(pix_fmt,</span> <span class="pre">codec_fmt,</span> <span class="pre">(frame_width,</span> <span class="pre">frame_height),</span> <span class="pre">(min_framerate,</span> <span class="pre">max_framerate))</span></tt>
+<cite>audio</cite> is a dict all the direct show <strong>audio</strong> devices. The keys
+of the dict are the names of the available direct show devices. The values
+are a list of the available configurations for that device. Each
+element in the list has the following format:
+<tt class="docutils literal"><span class="pre">((min_num_channels,</span> <span class="pre">min_num_channels),</span> <span class="pre">(min_bits,</span> <span class="pre">max_bits),</span> <span class="pre">(min_rate,</span> <span class="pre">max_rate))</span></tt>.</dd>
 </dl>
-<div class="highlight-python"><pre>from ffpyplayer.player import MediaPlayer
-from ffpyplayer.tools import list_dshow_devices
-import time, weakref
-dev = list_dshow_devices()
-print dev
-(['Laptop Integrated Webcam', 'wans'], ['Microphone Array (2- SigmaTel H',
-'Microphone (Plantronics .Audio '])
+</div></blockquote>
+<p>For example:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">ffpyplayer.player</span> <span class="kn">import</span> <span class="n">MediaPlayer</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">ffpyplayer.tools</span> <span class="kn">import</span> <span class="n">list_dshow_devices</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">time</span><span class="o">,</span> <span class="nn">weakref</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">dev</span> <span class="o">=</span> <span class="n">list_dshow_devices</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">print</span> <span class="n">dev</span>
+<span class="go">({&#39;Logitech HD Webcam C525&#39;: [(&#39;bgr24&#39;, &#39;&#39;, (160, 120), (5, 30)),</span>
+<span class="go">(&#39;bgr24&#39;, &#39;&#39;, (176, 144), (5, 30)), (&#39;bgr24&#39;, &#39;&#39;, (320, 176), (5, 30)),</span>
+<span class="go">(&#39;bgr24&#39;, &#39;&#39;, (320, 240), (5, 30)), (&#39;bgr24&#39;, &#39;&#39;, (352, 288), (5, 30)),</span>
+<span class="gp">...</span>
+<span class="go">(&#39;yuv420p&#39;, &#39;&#39;, (320, 240), (5, 30)), (&#39;yuv420p&#39;, &#39;&#39;, (352, 288), (5, 30))],</span>
+<span class="go">&#39;Laptop Integrated Webcam&#39;: [(&#39;bgr24&#39;, &#39;&#39;, (160, 120), (30, 30)),</span>
+<span class="gp">...</span>
+<span class="go">(&#39;yuyv422&#39;, &#39;&#39;, (352, 288), (30, 30)),</span>
+<span class="go">(&#39;yuyv422&#39;, &#39;&#39;, (640, 480), (30, 30))]},</span>
+<span class="go">{&#39;Microphone (Plantronics .Audio &#39;: [((1, 2), (8, 16), (11025, 44100))],</span>
+<span class="go">&#39;Microphone Array (2- SigmaTel H&#39;: [((1, 2), (8, 16), (11025, 44100))],</span>
+<span class="go">&#39;Microphone (HD Webcam C525)&#39;: [((1, 2), (8, 16), (11025, 44100))]})</span>
 
-def callback(selector, value):
-    if selector == 'quit':
-        print 'quitting'
-# see http://ffmpeg.org/ffmpeg-formats.html#Format-Options for rtbufsize
-# 110592000 = 640*480*3 at 30fps, for 4 seconds.
-# see http://ffmpeg.org/ffmpeg-devices.html#dshow for video_size, and framerate
-lib_opts = {'framerate':'30', 'video_size':'640x480', 'rtbufsize':'110592000'}
-ff_opts = {'f':'dshow'}
-player = MediaPlayer('video=%s:audio=%s' % (dev[0][0], dev[1][0]),
-                     callback=weakref.ref(callback), ff_opts=ff_opts,
-                     lib_opts=lib_opts)
+<span class="gp">&gt;&gt;&gt; </span><span class="k">def</span> <span class="nf">callback</span><span class="p">(</span><span class="n">selector</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
+<span class="gp">... </span>    <span class="k">if</span> <span class="n">selector</span> <span class="o">==</span> <span class="s">&#39;quit&#39;</span><span class="p">:</span>
+<span class="gp">... </span>        <span class="k">print</span> <span class="s">&#39;quitting&#39;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="c"># see http://ffmpeg.org/ffmpeg-formats.html#Format-Options for rtbufsize</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="c"># lets use the yuv420p, 320x240, 30fps</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="c"># 27648000 = 320*240*3 at 30fps, for 4 seconds.</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="c"># see http://ffmpeg.org/ffmpeg-devices.html#dshow for video_size, and framerate</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">lib_opts</span> <span class="o">=</span> <span class="p">{</span><span class="s">&#39;framerate&#39;</span><span class="p">:</span><span class="s">&#39;30&#39;</span><span class="p">,</span> <span class="s">&#39;video_size&#39;</span><span class="p">:</span><span class="s">&#39;320x240&#39;</span><span class="p">,</span>
+<span class="gp">... </span><span class="s">&#39;pixel_format&#39;</span><span class="p">:</span> <span class="s">&#39;yuv420p&#39;</span><span class="p">,</span> <span class="s">&#39;rtbufsize&#39;</span><span class="p">:</span><span class="s">&#39;27648000&#39;</span><span class="p">}</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">ff_opts</span> <span class="o">=</span> <span class="p">{</span><span class="s">&#39;f&#39;</span><span class="p">:</span><span class="s">&#39;dshow&#39;</span><span class="p">}</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">player</span> <span class="o">=</span> <span class="n">MediaPlayer</span><span class="p">(</span><span class="s">&#39;video=Logitech HD Webcam C525:audio=Microphone (HD Webcam C525)&#39;</span><span class="p">,</span>
+<span class="gp">... </span>                     <span class="n">callback</span><span class="o">=</span><span class="n">weakref</span><span class="o">.</span><span class="n">ref</span><span class="p">(</span><span class="n">callback</span><span class="p">),</span> <span class="n">ff_opts</span><span class="o">=</span><span class="n">ff_opts</span><span class="p">,</span>
+<span class="gp">... </span>                     <span class="n">lib_opts</span><span class="o">=</span><span class="n">lib_opts</span><span class="p">)</span>
 
-while 1:
-    frame, val = player.get_frame()
-    if val == 'eof':
-        break
-    elif frame is None:
-        time.sleep(0.01)
-    else:
-        img, t = frame
-        print val, t, img.get_pixel_format(), img.get_buffer_size()
-        time.sleep(val)
-0.0 264107.429 rgb24 (921600, 0, 0, 0)
-0.0 264108.364 rgb24 (921600, 0, 0, 0)
-0.0790016651154 264108.628 rgb24 (921600, 0, 0, 0)
-0.135997533798 264108.764 rgb24 (921600, 0, 0, 0)
-0.274529457092 264108.897 rgb24 (921600, 0, 0, 0)
-0.272421836853 264109.028 rgb24 (921600, 0, 0, 0)
-0.132406949997 264109.164 rgb24 (921600, 0, 0, 0)
-...</pre>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">while</span> <span class="mi">1</span><span class="p">:</span>
+<span class="gp">... </span>    <span class="n">frame</span><span class="p">,</span> <span class="n">val</span> <span class="o">=</span> <span class="n">player</span><span class="o">.</span><span class="n">get_frame</span><span class="p">()</span>
+<span class="gp">... </span>    <span class="k">if</span> <span class="n">val</span> <span class="o">==</span> <span class="s">&#39;eof&#39;</span><span class="p">:</span>
+<span class="gp">... </span>        <span class="k">break</span>
+<span class="gp">... </span>    <span class="k">elif</span> <span class="n">frame</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
+<span class="gp">... </span>        <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mf">0.01</span><span class="p">)</span>
+<span class="gp">... </span>    <span class="k">else</span><span class="p">:</span>
+<span class="gp">... </span>        <span class="n">img</span><span class="p">,</span> <span class="n">t</span> <span class="o">=</span> <span class="n">frame</span>
+<span class="gp">... </span>        <span class="k">print</span> <span class="n">val</span><span class="p">,</span> <span class="n">t</span><span class="p">,</span> <span class="n">img</span><span class="o">.</span><span class="n">get_pixel_format</span><span class="p">(),</span> <span class="n">img</span><span class="o">.</span><span class="n">get_buffer_size</span><span class="p">()</span>
+<span class="gp">... </span>        <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="n">val</span><span class="p">)</span>
+<span class="go">0.0 264107.429 rgb24 (230400, 0, 0, 0)</span>
+<span class="go">0.0 264108.364 rgb24 (230400, 0, 0, 0)</span>
+<span class="go">0.0790016651154 264108.628 rgb24 (230400, 0, 0, 0)</span>
+<span class="go">0.135997533798 264108.764 rgb24 (230400, 0, 0, 0)</span>
+<span class="go">0.274529457092 264108.897 rgb24 (230400, 0, 0, 0)</span>
+<span class="go">0.272421836853 264109.028 rgb24 (230400, 0, 0, 0)</span>
+<span class="go">0.132406949997 264109.164 rgb24 (230400, 0, 0, 0)</span>
+<span class="gp">...</span>
+<span class="go"># NOTE, by default the output is rgb24, that&#39;s why the output above is</span>
+<span class="go"># rgb24. To keep the output format the same as the input, do ff_opts[&#39;out_fmt&#39;] = &#39;yuv420p&#39;</span>
+</pre></div>
 </div>
 </dd></dl>
 

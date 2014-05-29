@@ -438,6 +438,60 @@ pixel format.</dd>
 </div>
 </dd></dl>
 
+<dl class="method">
+<dt id="ffpyplayer.pic.Image.to_memoryview">
+<tt class="descname">to_memoryview</tt><big>(</big><em>self</em>, <em>keep_align=False</em><big>)</big><a class="headerlink" href="#ffpyplayer.pic.Image.to_memoryview" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns a memoryviews of the buffers of the image.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><dl class="first docutils">
+<dt><cite>keep_align</cite>: bool</dt>
+<dd><p class="first last">If True, the buffers of the original image will be returned
+without making any additional copies. If False, then if the
+image alignment is already 1, the original buffers will be
+returned, otherwise, new buffers will be created with an
+alignment of 1 and the buffers will be copied into them
+and returned. See <a class="reference internal" href="#ffpyplayer.pic.Image.to_bytearray" title="ffpyplayer.pic.Image.to_bytearray"><tt class="xref py py-meth docutils literal"><span class="pre">to_bytearray()</span></tt></a>.</p>
+</dd>
+</dl>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">(4-element list): A list of cython arrays for each plane of this
+image&#8217;s pixel format. If the data didn&#8217;t have to be copied, the
+arrays point directly to the original image data. The arrays
+can be used where memoryviews are accepted, since cython arrays
+implement the memoryview interface.</p>
+</td>
+</tr>
+</tbody>
+</table>
+<div class="admonition warning">
+<p class="first admonition-title">Warning</p>
+<p class="last">If the data points to the original image data, you must ensure
+that this <a class="reference internal" href="#ffpyplayer.pic.Image" title="ffpyplayer.pic.Image"><tt class="xref py py-class docutils literal"><span class="pre">Image</span></tt></a> instance does not go out of memory
+while the returned arrays are in use. Otherwise when the
+<a class="reference internal" href="#ffpyplayer.pic.Image" title="ffpyplayer.pic.Image"><tt class="xref py py-class docutils literal"><span class="pre">Image</span></tt></a> goes out of memory, the original data will become
+invalid and usage of the returned arrays will crash python.</p>
+</div>
+<p>Get the buffer of an RGB image:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">w</span><span class="p">,</span> <span class="n">h</span> <span class="o">=</span> <span class="mi">100</span><span class="p">,</span> <span class="mi">10</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">img</span> <span class="o">=</span> <span class="n">Image</span><span class="p">(</span><span class="n">pix_fmt</span><span class="o">=</span><span class="s">&#39;rgb24&#39;</span><span class="p">,</span> <span class="n">size</span><span class="o">=</span><span class="p">(</span><span class="n">w</span><span class="p">,</span> <span class="n">h</span><span class="p">))</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">img</span><span class="o">.</span><span class="n">get_linesizes</span><span class="p">(</span><span class="n">keep_align</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+<span class="go">(300, 0, 0, 0)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">img</span><span class="o">.</span><span class="n">to_memoryview</span><span class="p">()</span>
+<span class="go">[&lt;ffpyplayer.pic.array object at 0x055DCE58&gt;, None, None, None]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">arr</span> <span class="o">=</span> <span class="n">img</span><span class="o">.</span><span class="n">to_memoryview</span><span class="p">()[</span><span class="mi">0</span><span class="p">]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="c"># memview is the only attribute of cython arrays</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">arr</span><span class="o">.</span><span class="n">memview</span>
+<span class="go">&lt;MemoryView of &#39;array&#39; at 0x55d1468&gt;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">arr</span><span class="o">.</span><span class="n">memview</span><span class="o">.</span><span class="n">size</span>
+<span class="go">3000</span>
+</pre></div>
+</div>
+</dd></dl>
+
 </dd></dl>
 
 <dl class="class">
