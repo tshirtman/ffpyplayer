@@ -35,7 +35,6 @@ def _initialize_ffmpeg():
         av_register_all()
         avformat_network_init()
         ffmpeg_initialized = 1
-_initialize_ffmpeg()
 
 
 cdef int lockmgr_initialized = 0
@@ -50,7 +49,9 @@ def set_ffmpeg_lockmgr():
         raise ValueError('Could not initialize lock manager.')
     lockmgr_initialized = 1
 set_ffmpeg_lockmagr = set_ffmpeg_lockmgr
+
 set_ffmpeg_lockmgr()
+_initialize_ffmpeg()
 
 
 
