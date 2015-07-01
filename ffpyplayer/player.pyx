@@ -10,6 +10,10 @@ TDOD: make callback not ref by default.
 
 __all__ = ('MediaPlayer', )
 
+from ffpyplayer.tools import loglevels, _initialize_ffmpeg, set_ffmpeg_lockmgr
+set_ffmpeg_lockmgr()
+_initialize_ffmpeg()
+
 include 'ff_defs_comp.pxi'
 include "inline_funcs.pxi"
 
@@ -28,7 +32,6 @@ from ffpyplayer.ffthreading cimport MTGenerator, SDL_MT, Py_MT, MTThread, MTMute
 from ffpyplayer.ffqueue cimport FFPacketQueue
 from ffpyplayer.ffcore cimport VideoState
 from ffpyplayer.sink cimport VideoSettings, VideoSink
-from ffpyplayer.tools import loglevels, _initialize_ffmpeg
 from ffpyplayer.pic cimport Image
 from libc.stdio cimport printf
 from cpython.ref cimport PyObject
