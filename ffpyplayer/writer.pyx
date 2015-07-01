@@ -13,6 +13,7 @@ import copy
 from ffpyplayer.tools import get_supported_framerates, get_supported_pixfmts
 from ffpyplayer.tools import loglevels, _initialize_ffmpeg
 from ffpyplayer.pic cimport Image
+from ffpyplayer.tools cimport _lockmgr_mutex
 
 include "inline_funcs.pxi"
 
@@ -343,7 +344,9 @@ cdef class MediaWriter(object):
                 if opt_default(k, v, s[r].sws_ctx, NULL, &self.format_opts, &s[r].codec_opts) < 0:
                     raise Exception('library option %s: %s not found' % (k, v))
 
+            _lockmgr_mutex.lock()
             res = avcodec_open2(s[r].codec_ctx, s[r].codec, &s[r].codec_opts)
+            _lockmgr_mutex.unlock()
             bad_vals = ''
             dict_temp = av_dict_get(s[r].codec_opts, "", dict_temp, AV_DICT_IGNORE_SUFFIX)
             while dict_temp != NULL:

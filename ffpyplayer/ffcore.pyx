@@ -10,6 +10,7 @@ from ffpyplayer.ffthreading cimport MTGenerator, MTThread, MTMutex, MTCond, Py_M
 from ffpyplayer.ffclock cimport Clock
 from ffpyplayer.sink cimport VideoSink, VideoPicture, SubPicture
 from ffpyplayer.pic cimport Image
+from ffpyplayer.tools cimport _lockmgr_mutex
 from cpython.ref cimport PyObject
 import traceback
 
@@ -1587,8 +1588,11 @@ cdef class VideoState(object):
             av_dict_set(&opts, "lowres", av_asprintf("%d", stream_lowres), AV_DICT_DONT_STRDUP_VAL)
         if avctx.codec_type == AVMEDIA_TYPE_VIDEO or avctx.codec_type == AVMEDIA_TYPE_AUDIO:
             av_dict_set(&opts, "refcounted_frames", "1", 0)
+        _lockmgr_mutex.lock()
         if avcodec_open2(avctx, codec, &opts) < 0:
+            _lockmgr_mutex.unlock()
             return -1
+        _lockmgr_mutex.unlock()
         t = av_dict_get(opts, "", NULL, AV_DICT_IGNORE_SUFFIX)
         if t != NULL:
             av_log(NULL, AV_LOG_ERROR, "Option %s not found.\n", t.key)
@@ -1703,7 +1707,9 @@ cdef class VideoState(object):
             self.subtitleq.packet_queue_flush()
 
         ic.streams[stream_index].discard = AVDISCARD_ALL
+        _lockmgr_mutex.lock()
         avcodec_close(avctx)
+        _lockmgr_mutex.unlock()
         if avctx.codec_type == AVMEDIA_TYPE_AUDIO:
             self.audio_st = NULL
             self.audio_stream = -1

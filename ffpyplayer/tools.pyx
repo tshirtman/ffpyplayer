@@ -38,6 +38,7 @@ def _initialize_ffmpeg():
 _initialize_ffmpeg()
 
 
+cdef MTMutex _lockmgr_mutex = MTMutex(SDL_MT)
 def set_ffmpeg_lockmagr():
     cdef int res
     with nogil:
@@ -63,7 +64,7 @@ formats_out = sorted(list_fmt_out())
 
 cdef object _log_callback = None
 cdef int _print_prefix
-cdef MTMutex _log_mutex= MTMutex(Py_MT)
+cdef MTMutex _log_mutex = MTMutex(Py_MT)
 
 cdef void _log_callback_func(void* ptr, int level, const char* fmt, va_list vl) nogil:
     cdef char line[2048]

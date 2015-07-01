@@ -11,10 +11,15 @@
 #include "libavutil/opt.h"
 #include "libavutil/avstring.h"
 #include "libavutil/pixdesc.h"
+#include "libavutil/version.h"
 
 
 #if CONFIG_POSTPROC
 #include "libpostproc/postprocess.h"
+#endif
+
+#ifndef AV_LOG_TRACE
+#define AV_LOG_TRACE    56
 #endif
 
 
@@ -154,8 +159,8 @@ static int opt_default(const char *opt, const char *arg,
     return AVERROR_OPTION_NOT_FOUND;
 }
 
-static int get_plane_sizes(int size[4], int required_plane[4], enum AVPixelFormat pix_fmt, 
-		int height, const int linesizes[4])
+static int get_plane_sizes(int size[4], int required_plane[4], enum AVPixelFormat pix_fmt,
+        int height, const int linesizes[4])
 {
     int i, total_size;
     memset(required_plane, 0, sizeof(required_plane[0])*4);
