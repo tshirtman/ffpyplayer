@@ -49,7 +49,9 @@ include "inline_funcs.pxi"
 
 from cpython.ref cimport PyObject
 from cython cimport view as cyview
-from ffpyplayer.tools import loglevels, _initialize_ffmpeg
+from ffpyplayer.tools import loglevels, _initialize_ffmpeg, set_ffmpeg_lockmgr
+set_ffmpeg_lockmgr()
+_initialize_ffmpeg()
 
 cdef extern from "string.h" nogil:
     void *memset(void *, int, size_t)
