@@ -11,8 +11,10 @@ __all__ = ('MediaWriter', )
 
 import copy
 from ffpyplayer.tools import get_supported_framerates, get_supported_pixfmts
-from ffpyplayer.tools import loglevels, _initialize_ffmpeg
+from ffpyplayer.tools import loglevels, _initialize_ffmpeg, set_ffmpeg_lockmgr
 from ffpyplayer.pic cimport Image
+set_ffmpeg_lockmgr()
+_initialize_ffmpeg()
 
 include "inline_funcs.pxi"
 
