@@ -38,13 +38,19 @@ def _initialize_ffmpeg():
 _initialize_ffmpeg()
 
 
-def set_ffmpeg_lockmagr():
+cdef int lockmgr_initialized = 0
+def set_ffmpeg_lockmgr():
     cdef int res
+    global lockmgr_initialized
+    if lockmgr_initialized:
+        return
     with nogil:
         res = av_lockmgr_register(get_lib_lockmgr(SDL_MT))
     if res:
         raise ValueError('Could not initialize lock manager.')
-set_ffmpeg_lockmagr()
+    lockmgr_initialized = 1
+set_ffmpeg_lockmagr = set_ffmpeg_lockmgr
+set_ffmpeg_lockmgr()
 
 
 
